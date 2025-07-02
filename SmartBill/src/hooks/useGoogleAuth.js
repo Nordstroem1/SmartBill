@@ -49,8 +49,8 @@ export const useGoogleAuth = () => {
         state: state,
         code_challenge: codeChallenge,
         code_challenge_method: 'S256',
-        access_type: 'offline', // Request refresh token
-        prompt: 'consent' // Force consent screen to get refresh token
+        access_type: 'offline',
+        prompt: 'consent'
       });
 
       const authUrl = `${GOOGLE_AUTH_URL}?${params.toString()}`;
@@ -80,8 +80,8 @@ export const useGoogleAuth = () => {
         throw new Error('Code verifier not found');
       }
 
-      // Send authorization code and code_verifier to backend
-      // Let the backend handle the token exchange for maximum security
+      // Send only the authorization code to backend
+      // Backend will handle everything else
       const backendResponse = await fetch('/api/auth/google', {
         method: 'POST',
         headers: {
@@ -100,18 +100,17 @@ export const useGoogleAuth = () => {
         throw new Error(`Backend authentication failed: ${errorData}`);
       }
 
-      const responseData = await backendResponse.json();
+      const userData = await backendResponse.json();
       
       // Clean up session storage after successful authentication
       sessionStorage.removeItem('google_auth_state');
       sessionStorage.removeItem('google_code_verifier');
       
-      // Store user data and app token
-      localStorage.setItem('user', JSON.stringify(responseData.user));
-      localStorage.setItem('token', responseData.token);
+      // Store only user data - backend handles all tokens
+      localStorage.setItem('user', JSON.stringify(userData));
       
       setIsLoading(false);
-      return responseData;
+      return userData;
 
     } catch (err) {
       setError(err.message);

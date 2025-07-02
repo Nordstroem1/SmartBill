@@ -1,12 +1,6 @@
-// Utility functions for authenticated API calls
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+// Simple auth utilities - only auth code to backend, backend handles tokens
 
-/**
- * Get the stored authentication token
- */
-export const getAuthToken = () => {
-  return localStorage.getItem('token');
-};
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
 
 /**
  * Get the stored user data
@@ -20,48 +14,21 @@ export const getStoredUser = () => {
  * Check if user is authenticated
  */
 export const isAuthenticated = () => {
-  const token = getAuthToken();
   const user = getStoredUser();
-  return !!(token && user);
+  return !!user; // Simple check - if user exists, they're authenticated
 };
 
 /**
- * Make an authenticated API request
+ * Store user data after successful authentication
  */
-export const apiRequest = async (endpoint, options = {}) => {
-  const token = getAuthToken();
-  
-  const config = {
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token && { Authorization: `Bearer ${token}` }),
-      ...options.headers,
-    },
-    ...options,
-  };
-
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
-
-  if (response.status === 401) {
-    // Token expired or invalid - redirect to login
-    clearAuth();
-    window.location.href = '/login';
-    return;
-  }
-
-  if (!response.ok) {
-    const error = await response.text();
-    throw new Error(error || `HTTP error! status: ${response.status}`);
-  }
-
-  return response.json();
+export const storeUserData = (userData) => {
+  localStorage.setItem('user', JSON.stringify(userData));
 };
 
 /**
  * Clear authentication data
  */
 export const clearAuth = () => {
-  localStorage.removeItem('token');
   localStorage.removeItem('user');
 };
 
@@ -69,21 +36,8 @@ export const clearAuth = () => {
  * Logout user
  */
 export const logout = async () => {
-  try {
-    // Call backend logout endpoint
-    await apiRequest('/api/auth/logout', { method: 'POST' });
-  } catch (error) {
-    console.error('Logout error:', error);
-  } finally {
-    // Clear local storage regardless of backend response
-    clearAuth();
-    window.location.href = '/login';
-  }
-};
-
-/**
- * Get user profile from backend
- */
-export const getUserProfile = async () => {
-  return apiRequest('/api/user/profile');
+  // Clear local storage
+  clearAuth();
+  // Redirect to login
+  window.location.href = '/login';
 };
