@@ -1,0 +1,137 @@
+/* ==========================================================================
+   App Layout - Modern CSS Architecture
+   ========================================================================== */
+
+/* CSS Custom Properties for Design System */
+:root {
+  --max-content-width: 1200px;
+  --max-text-width: 65ch;
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+  --spacing-2xl: 4rem;
+  --border-radius: 0.5rem;
+  --transition-fast: 0.15s ease-out;
+  --transition-base: 0.3s ease-out;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+/* Main App Container - Flexbox Layout Pattern */
+.app {
+  --header-height: 4rem;
+  --footer-height: 3rem;
+  
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh; /* Dynamic viewport height for mobile */
+  width: 100%;
+  isolation: isolate; /* Create new stacking context */
+}
+
+/* Layout Components - Semantic Structure */
+.app > header {
+  flex-shrink: 0;
+  width: 100%;
+  z-index: 10;
+}
+
+.app > .main-content {
+  flex: 1 1 auto;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  max-width: var(--max-content-width);
+  margin-inline: auto;
+  padding-block: var(--spacing-lg);
+  padding-inline: var(--spacing-md);
+  container-type: inline-size; /* Container queries support */
+}
+
+.app > footer {
+  flex-shrink: 0;
+  width: 100%;
+  margin-top: auto;
+}
+
+/* Content Flow and Typography */
+.main-content > * {
+  width: 100%;
+  max-width: var(--max-text-width);
+}
+
+.main-content > * + * {
+  margin-top: var(--spacing-md);
+}
+
+/* Component-level responsive design using container queries */
+@container (min-width: 48rem) {
+  .main-content {
+    padding-inline: var(--spacing-lg);
+    padding-block: var(--spacing-xl);
+  }
+  
+  .main-content > * + * {
+    margin-top: var(--spacing-lg);
+  }
+}
+
+@container (min-width: 64rem) {
+  .main-content {
+    padding-inline: var(--spacing-2xl);
+    padding-block: var(--spacing-2xl);
+  }
+}
+
+/* Fallback for browsers without container query support */
+@supports not (container-type: inline-size) {
+  @media (min-width: 48rem) {
+    .app .main-content {
+      padding-inline: var(--spacing-lg);
+      padding-block: var(--spacing-xl);
+    }
+  }
+  
+  @media (min-width: 64rem) {
+    .app .main-content {
+      padding-inline: var(--spacing-2xl);
+      padding-block: var(--spacing-2xl);
+    }
+  }
+}
+
+/* Accessibility & Performance Optimizations */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus management for keyboard navigation */
+.app:focus-within {
+  scroll-behavior: smooth;
+}
+
+/* Print styles */
+@media print {
+  .app {
+    display: block;
+  }
+  
+  .app > header,
+  .app > footer {
+    display: none;
+  }
+  
+  .main-content {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+}
