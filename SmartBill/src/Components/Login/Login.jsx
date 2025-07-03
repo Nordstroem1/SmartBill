@@ -27,7 +27,7 @@ const Login = () => {
           navigate('/dashboard');
         })
         .catch((err) => {
-          console.error('Authentication failed:', err);
+          console.error('Authentication failed');
         });
     }
   }, [searchParams, handleAuthCallback, navigate]);

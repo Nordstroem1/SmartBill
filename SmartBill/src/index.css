@@ -8,19 +8,37 @@ html, body, #root {
 
 body {
   font-family: 'Open Sans', sans-serif;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  margin: 0;
+  padding: 0;
 }
 
-/* App container should take full height */
-.app {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
+/* Remove any blue outlines or hover highlights */
+* {
+  outline: none !important;
 }
 
-/* Main content should grow to push footer down */
-.main-content {
-  flex: 1;
+*:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+*:hover {
+  outline: none !important;
+}
+
+/* Remove any browser default focus styles */
+button:focus,
+input:focus,
+select:focus,
+textarea:focus,
+a:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Remove any debugging outlines globally */
+*:before,
+*:after {
+  outline: none !important;
+  box-shadow: none !important;
 }
