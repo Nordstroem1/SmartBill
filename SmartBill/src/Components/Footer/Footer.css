@@ -3,7 +3,7 @@
     width: 100%;
     margin-top: auto; /* push to bottom in flex layout */
     padding: 1rem;
-    box-shadow: 0px 0px 3px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px -3px 3px 0px rgba(0, 0, 0, 0.1);
     background-color: white;
     /* z-index removed to stay behind content when scrolling */
     outline: none;
@@ -15,7 +15,6 @@
     align-items: center;
     width: 100%;
     max-width: var(--max-content-width);
-    margin: 0 auto;
     box-sizing: border-box;
     outline: none;
 }
