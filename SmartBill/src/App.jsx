@@ -4,6 +4,7 @@ import Dashboard from './Components/Dashboard/Dashboard'
 import Header from './Components/Header/Header'
 import Footer from './Components/Footer/Footer'
 import Login from './Components/Login/Login'
+import CompanyForm from './Components/Company/CompanyForm'
 import ProtectedRoute from './Components/ProtectedRoute/ProtectedRoute'
 import { isAuthenticated } from './utils/auth'
 
@@ -19,10 +20,18 @@ function App() {
             <Route 
               path="/dashboard" 
               element={
-                <ProtectedRoute>
+                // <ProtectedRoute>
                   <Dashboard />
-                </ProtectedRoute>
+                // </ProtectedRoute>
               } 
+            />
+            <Route 
+              path="/company" 
+              element={
+                // <ProtectedRoute>
+                  <CompanyForm />
+                // </ProtectedRoute>
+              }
             />
             <Route 
               path="/" 
