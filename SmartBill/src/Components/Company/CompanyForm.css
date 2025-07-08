@@ -342,6 +342,19 @@
   font-weight: 400;
 }
 
+/* Error Text Styling */
+.company-form-container .error-text {
+  color: #ef4444;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+/* Error Input Styling */
+.company-form-container .form-group.error input,
+.company-form-container .form-group.error select {
+  border-color: #ef4444 !important;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .company-form-container {
@@ -426,4 +439,10 @@
 .company-form-container .form-group.error input[type="text"]:focus {
   border-color: #ef4444;
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+/* Place payment error under bankgiro input */
+.form-row .form-group + .error-text {
+  margin-top: 4px;
+  grid-column: 1 / span 2;
 }
