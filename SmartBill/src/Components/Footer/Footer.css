@@ -1,22 +1,24 @@
 .footer {
-    position: static;
-    width: 100%;
-    margin-top: auto; /* push to bottom in flex layout */
+    /* Footer at bottom of content flow, not viewport */
+    position: relative;
+    width: 100vw;
     padding: 1rem;
+    margin-top: 10px; /* 10px margin from content above */
     box-shadow: 0px -3px 3px 0px rgba(0, 0, 0, 0.1);
     background-color: white;
-    /* z-index removed to stay behind content when scrolling */
     outline: none;
     border: none;
+    z-index: 1000; /* Ensure footer stays on top */
+    height: auto; /* Let content determine height */
 }
+
 .footer-content{
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
     max-width: var(--max-content-width);
-    box-sizing: border-box;
-    outline: none;
+    margin: 0 auto;
 }
 
 /* Remove any debugging outlines */
@@ -26,3 +28,5 @@
     outline: none !important;
     box-shadow: none !important;
 }
+
+

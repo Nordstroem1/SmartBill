@@ -26,18 +26,18 @@
   
   display: flex;
   flex-direction: column;
-  /* Center header, main, and footer */
-  min-height: 100vh;
+  /* Allow natural content flow */
+  min-height: 100vh; /* Minimum height, but can extend */
   min-height: 100dvh; /* Dynamic viewport height for mobile */
   width: 100%;
   isolation: isolate; /* Create new stacking context */
 }
 
-/* Make main content grow to push footer to bottom */
+/* Main content can grow naturally with content */
 .app > .main-content,
 .main-content {
   flex: 1 1 auto;
-  /* ensures the content area grows to fill available space */
+  /* Remove bottom padding - footer is now in natural flow */
 }
 
 /* Content Flow and Typography */

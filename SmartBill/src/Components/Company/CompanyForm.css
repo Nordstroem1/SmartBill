@@ -1,116 +1,429 @@
+/* ==========================================================================
+   Company Form Component - Scoped Styles
+   ========================================================================== */
+
+/* Main Container - Scoped to avoid conflicts */
 .company-form-container {
   display: flex;
   justify-content: center;
-  padding: var(--spacing-lg) var(--spacing-md);
+  align-items: flex-start;
+  min-height: 100%;
+  padding: var(--spacing-lg, 2rem) var(--spacing-md, 1.5rem);
+  background-color: white;
 }
 
-.company-form {
+/* Form Wrapper */
+.company-form-container .company-form {
   background: white;
-  /* Add stronger top shadow for emphasis */
-  box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1), var(--shadow-md);
-  border-radius: var(--border-radius);
-  padding: var(--spacing-xl);
+  border-radius: var(--border-radius, 0.5rem);
+  box-shadow: var(--shadow-md, 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1));
+  padding: var(--spacing-xl, 3rem);
   width: 100%;
-  max-width: 600px;
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-lg);
+  max-width: 500px;
+  border: 1px solid #e2e8f0;
 }
 
-.form-group {
-  display: flex;
-  flex-direction: column;
+/* Form Groups */
+.company-form-container .form-group {
+  margin-bottom: var(--spacing-xl, 3rem); /* Increased from 2rem to 3rem */
+  position: relative;
 }
 
-.form-group label {
-  font-weight: 600;
-  margin-bottom: var(--spacing-xs);
-  color: #374151;
+.company-form-container .form-group:last-of-type {
+  margin-bottom: var(--spacing-xl, 3rem);
 }
 
-.form-group input,
-.form-group textarea {
-  padding: var(--spacing-sm);
-  border: 1px solid #d1d5db;
-  border-radius: var(--border-radius);
+/* Labels */
+.company-form-container .form-group label {
+  display: block;
+  margin-bottom: var(--spacing-sm, 1rem); /* Increased from 0.5rem to 1rem */
+  font-weight: 700; /* Tjockare text för bättre kontrast */
+  color: #1f2937; /* Mörkare färg för starkare kontrast */
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Input Fields */
+.company-form-container .form-group input[type="text"] {
+  width: 100%;
+  padding: var(--spacing-sm, 1rem);
+  border: 3px solid #d1d5db; /* Tjockare border för bättre kontrast */
+  border-radius: var(--border-radius, 0.5rem);
   font-size: 1rem;
-  color: #1f2937;
-  max-width: 90%;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 500; /* Tjockare text för bättre läsbarhet */
+  transition: var(--transition-base, 0.3s ease-out);
+  background-color: #ffffff;
+  color: #000000; /* Ren svart text för maximal kontrast */
+  outline: none;
+  box-sizing: border-box;
+  height: 3rem; /* Standard input height */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Lägg till skugga för djup */
 }
 
-.form-group textarea {
-  resize: vertical;
-  max-width: 90%;
-  max-height: 100px;
-  min-height: 20px;
+.company-form-container .form-group input[type="text"]:focus {
+  border-color: #1e40af; /* Mörkare blå för starkare kontrast */
+  box-shadow: 0 0 0 4px rgba(30, 64, 175, 0.25); /* Starkare focus ring */
+  background-color: #fefefe; /* Lite ljusare bakgrund vid focus */
 }
 
-.logo-upload input[type="file"] {
-  /* completely hide the native file input */
-  display: none !important;  /* ensure the native input is hidden */
-  outline: none; /* remove blue focus ring */
+.company-form-container .form-group input[type="text"]::placeholder {
+  color: #6b7280; /* Mörkare placeholder för bättre läsbarhet */
+  font-weight: 400;
 }
 
-.logo-upload input[type="file"]::-webkit-file-upload-button {
-  display: none;
+/* File Upload Styling */
+.company-form-container .logo-upload {
+  text-align: center; /* Center the logo section */
 }
 
-.logo-preview {
-  margin-top: var(--spacing-sm);
-  max-width: 100px;
-  max-height: 100px;
-  object-fit: contain;
-  border: 1px solid #d1d5db;
-  border-radius: var(--border-radius);
+/* Upload Area - Flex container for button and preview */
+.company-form-container .logo-upload-area {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* Keep button and preview left-aligned */
+  gap: var(--spacing-lg, 2rem);
+  margin-top: var(--spacing-md, 1.5rem);
 }
 
-/* Custom file selector text */
-.file-text {
-  display: inline-block;
-  margin-top: var(--spacing-xs);
-  padding: var(--spacing-sm) var(--spacing-md);
-  border: 1px solid #d1d5db;
-  border-radius: var(--border-radius);
-  color: #1f2937;
+/* Create Company Title - Main Heading */
+.company-form-container .create-company-title {
+  font-size: 2rem; /* Biggest font size for main title */
+  font-weight: 800; /* Extra bold for prominence */
+  color: #111827; /* Darker color for main title */
+  margin: 0 0 calc(var(--spacing-xl, 3rem) + 1rem) 0; /* Increased bottom margin */
+  text-align: center; /* Center the main title */
+  display: block; /* Ensure it takes full width for centering */
+  font-family: 'Open Sans', sans-serif;
+}
+
+/* Logo Upload Button Label - Separate from main title */
+.company-form-container .logo-upload-label {
+  font-size: 0.875rem; /* Standard label size */
+  font-weight: 700; /* Medium-bold weight */
+  color: #1f2937; /* Standard label color */
+  text-transform: uppercase; /* Standard label styling */
+  letter-spacing: 0.05em; /* Standard label spacing */
+  margin-bottom: var(--spacing-xs, 0.5rem); /* Standard label margin */
+  text-align: left; /* Left align for form label */
+  display: block; /* Block display */
+}
+
+/* Hide the default file input */
+.company-form-container .logo-upload input[type="file"] {
+  position: absolute;
+  left: -9999px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Custom File Upload Button - Modern Style */
+.company-form-container .logo-upload .file-text {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.25rem; /* Increased padding for larger button */
+  background: linear-gradient(135deg, #1134d1 0%, #01652e 100%);
+  color: white !important; /* Force white text with higher specificity */
+  border: none;
+  border-radius: var(--border-radius, 0.5rem);
+  font-size: 0.875rem; /* Increased from 0.7rem to 0.875rem for better readability */
+  font-weight: 500;
+  font-family: 'Open Sans', sans-serif;
   cursor: pointer;
-  transition: background-color var(--transition-fast);
-  background-color: white; /* match other inputs */
-  outline: none; /* remove blue focus ring */
-  /* disable mobile tap highlight */
-  -webkit-tap-highlight-color: transparent;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 0;
+  flex-shrink: 0;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  position: relative;
+  min-height: 40px; /* Increased minimum height for better proportions */
+  outline: none;
+}
+
+/* Focus state */
+.company-form-container .logo-upload .file-text:focus {
+  background: linear-gradient(135deg, #1134d1 0%, #01652e 100%);
+  outline: 3px solid rgba(17, 52, 209, 0.5);
+  outline-offset: 2px;
+}
+
+/* Hover state - modern gradient shift */
+.company-form-container .logo-upload .file-text:hover {
+  background: linear-gradient(135deg, #1134d1 0%, #01652e 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+/* Active state */
+.company-form-container .logo-upload .file-text:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+}
+
+/* Logo Preview */
+.company-form-container .logo-preview {
+  max-width: 150px;
+  max-height: 150px;
+  margin-top: 0; /* Remove top margin for horizontal layout */
+  border-radius: var(--border-radius, 0.5rem);
+  box-shadow: var(--shadow-sm, 0 1px 2px 0 rgb(0 0 0 / 0.05));
+  border: 2px solid #e5e7eb;
+  object-fit: contain;
+  flex-shrink: 0; /* Prevent image from shrinking */
+}
+
+/* Submit Button */
+.company-form-container .submit-btn {
+  width: 100%;
+  padding: var(--spacing-md, 1.5rem) var(--spacing-lg, 2rem);
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius, 0.5rem);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-base, 0.3s ease-out);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: calc(var(--spacing-xl, 3rem) + 0.5rem); /* Increased top margin */
+}
+
+.company-form-container .submit-btn:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.company-form-container .submit-btn:active {
+  transform: translateY(0);
+}
+
+/* Form Row Layout - for side-by-side fields */
+.company-form-container .form-row {
+  display: flex;
+  gap: var(--spacing-lg, 2rem); /* Increased gap from 1.5rem to 2rem */
+  margin-bottom: var(--spacing-xl, 3rem); /* Increased from 2rem to 3rem */
+}
+
+.company-form-container .form-row .form-group {
+  margin-bottom: 0;
+  flex: 1;
+}
+
+.company-form-container .form-group.half-width {
+  flex: 1;
+}
+
+/* Section Titles */
+.company-form-container .form-section-title {
+  margin: calc(var(--spacing-xl, 3rem) + 2rem) 0 var(--spacing-xl, 3rem) 0; /* Increased top margin */
+  padding-top: calc(var(--spacing-lg, 2rem) + 0.5rem); /* Increased padding */
+  border-top: 2px solid #e5e7eb;
+}
+
+.company-form-container .form-section-title h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+  text-align: center;
+}
+
+/* Checkbox Styling */
+.company-form-container .checkbox-group {
+  margin-bottom: var(--spacing-sm, 1rem); /* Increased from 0.5rem to 1rem */
+}
+
+.company-form-container .checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 0.875rem;
+  text-transform: none;
+  letter-spacing: normal;
+  margin-bottom: 0;
+}
+
+.company-form-container .checkbox-label input[type="checkbox"] {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: var(--spacing-sm, 1rem);
+  cursor: pointer;
+  accent-color: #1e40af;
+}
+
+.company-form-container .checkbox-text {
   user-select: none;
 }
 
-.file-text:hover,
-.file-text:focus {
-  background-color: #f3f4f6;
-  outline: none; /* remove blue focus ring */
-}
-
-.file-text:active {
-  background-color: white; /* prevent blue overlay when tapping */
-}
-
-/* Remove any default focus outline or shadow on the label trigger */
-.file-text,
-.file-text:focus,
-.file-text:focus-visible {
-  outline: none !important;
-  box-shadow: none !important;
-}
-
-.submit-btn {
-  background-color: #2563eb;
-  color: white;
-  border: none;
-  padding: var(--spacing-md) var(--spacing-lg);
+/* Select Styling */
+.company-form-container .form-group select {
+  width: 100%;
+  padding: 2rem var(--spacing-sm, 1rem); /* Increased vertical padding to 2rem for better text visibility */
+  border: 3px solid #d1d5db;
+  border-radius: var(--border-radius, 0.5rem);
   font-size: 1rem;
-  font-weight: 600;
-  border-radius: var(--border-radius);
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 500;
+  transition: var(--transition-base, 0.3s ease-out);
+  background-color: #ffffff;
+  color: #000000;
+  outline: none;
+  box-sizing: border-box;
+  height: 6rem; /* Increased height from 4rem to 4.5rem to prevent text cutoff */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   cursor: pointer;
-  transition: background-color var(--transition-fast);
+  line-height: 1; /* Increased line height for better spacing */
+  vertical-align: middle; /* Ensure proper vertical alignment */
+  -webkit-appearance: none; /* Remove default styling */
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.75rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 3.5rem; /* Increased space for dropdown arrow */
 }
 
-.submit-btn:hover {
-  background-color: #1d4ed8;
+.company-form-container .form-group select:focus {
+  border-color: #1e40af;
+  box-shadow: 0 0 0 4px rgba(30, 64, 175, 0.25);
+  background-color: #fefefe;
+}
+
+/* Select option styling */
+.company-form-container .form-group select option {
+  padding: 1rem 0.75rem; /* Increased vertical padding for options */
+  font-size: 1rem;
+  color: #000000;
+  background-color: #ffffff;
+  line-height: 1.6; /* Increased line height to match select */
+  min-height: 3rem; /* Minimum height for each option */
+}
+
+/* Email and URL Input Styling */
+.company-form-container .form-group input[type="email"],
+.company-form-container .form-group input[type="url"],
+.company-form-container .form-group input[type="tel"] {
+  width: 100%;
+  padding: var(--spacing-sm, 1rem);
+  border: 3px solid #d1d5db;
+  border-radius: var(--border-radius, 0.5rem);
+  font-size: 1rem;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 500;
+  transition: var(--transition-base, 0.3s ease-out);
+  background-color: #ffffff;
+  color: #000000;
+  outline: none;
+  box-sizing: border-box;
+  height: 3rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.company-form-container .form-group input[type="email"]:focus,
+.company-form-container .form-group input[type="url"]:focus,
+.company-form-container .form-group input[type="tel"]:focus {
+  border-color: #1e40af;
+  box-shadow: 0 0 0 4px rgba(30, 64, 175, 0.25);
+  background-color: #fefefe;
+}
+
+.company-form-container .form-group input[type="email"]::placeholder,
+.company-form-container .form-group input[type="url"]::placeholder,
+.company-form-container .form-group input[type="tel"]::placeholder {
+  color: #6b7280;
+  font-weight: 400;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .company-form-container {
+    padding: var(--spacing-md, 1.5rem) var(--spacing-sm, 1rem);
+  }
+  
+  .company-form-container .company-form {
+    padding: var(--spacing-lg, 2rem);
+  }
+  
+  .company-form-container .form-group {
+    margin-bottom: var(--spacing-md, 1.5rem);
+  }
+  
+  .company-form-container .logo-upload .file-text {
+    padding: 0.75rem 1rem; /* Adjusted mobile padding to maintain readability */
+  }
+  
+  /* Stack upload button and preview vertically on mobile */
+  .company-form-container .logo-upload-area {
+    flex-direction: column;
+    gap: var(--spacing-md, 1.5rem);
+  }
+  
+  .company-form-container .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .company-form-container .form-row .form-group {
+    margin-bottom: var(--spacing-md, 1.5rem);
+  }
+  
+  .company-form-container .form-section-title {
+    margin: var(--spacing-lg, 2rem) 0 var(--spacing-md, 1.5rem) 0;
+    padding-top: var(--spacing-md, 1.5rem);
+  }
+  
+  .company-form-container .checkbox-label {
+    font-size: 0.8rem;
+  }
+  
+  .company-form-container .checkbox-label input[type="checkbox"] {
+    width: 1.1rem;
+    height: 1.1rem;
+    margin-right: var(--spacing-xs, 0.5rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .company-form-container .company-form {
+    padding: var(--spacing-md, 1.5rem);
+  }
+  
+  .company-form-container .form-group input[type="text"],
+  .company-form-container .form-group input[type="email"],
+  .company-form-container .form-group input[type="url"],
+  .company-form-container .form-group input[type="tel"],
+  .company-form-container .form-group select {
+    font-size: 16px; /* Prevent zoom on iOS */
+    height: 3.5rem; /* Slightly smaller on mobile but still spacious */
+  }
+  
+  .company-form-container .form-group select {
+    padding: var(--spacing-sm, 1rem); /* Reduce padding on mobile */
+    padding-right: 3rem; /* Adjust arrow space on mobile */
+  }
+}
+
+/* Focus states for accessibility */
+.company-form-container .logo-upload .file-text:focus,
+.company-form-container .submit-btn:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Error states (if needed in the future) */
+.company-form-container .form-group.error input[type="text"] {
+  border-color: #ef4444;
+}
+
+.company-form-container .form-group.error input[type="text"]:focus {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
 }
