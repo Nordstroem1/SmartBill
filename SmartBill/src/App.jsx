@@ -5,6 +5,7 @@ import Header from './Components/Header/Header'
 import Footer from './Components/Footer/Footer'
 import Login from './Components/Login/Login'
 import CompanyForm from './Components/Company/CompanyForm'
+import LandingPage from './Components/LandingPage/LandingPage'
 import ProtectedRoute from './Components/ProtectedRoute/ProtectedRoute'
 import { isAuthenticated } from './utils/auth'
 
@@ -16,6 +17,7 @@ function App() {
         <Header />
         <main className="main-content">
           <Routes>
+            <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />
             <Route 
               path="/dashboard" 
@@ -32,15 +34,6 @@ function App() {
                   <CompanyForm />
                 // </ProtectedRoute>
               }
-            />
-            <Route 
-              path="/" 
-              element={
-                <Navigate 
-                  to={isAuthenticated() ? "/dashboard" : "/login"} 
-                  replace 
-                />
-              } 
             />
           </Routes>
         </main>

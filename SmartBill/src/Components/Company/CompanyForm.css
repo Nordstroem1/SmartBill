@@ -265,7 +265,10 @@
 /* Select Styling */
 .company-form-container .form-group select {
   width: 100%;
-  padding: 2rem var(--spacing-sm, 1rem); /* Increased vertical padding to 2rem for better text visibility */
+  /* Ensure descenders are visible by using auto height and sufficient vertical padding */
+  padding: 1rem var(--spacing-sm, 1rem);
+  min-height: 2.5rem;
+  height: auto;
   border: 3px solid #d1d5db;
   border-radius: var(--border-radius, 0.5rem);
   font-size: 1rem;
@@ -276,7 +279,6 @@
   color: #000000;
   outline: none;
   box-sizing: border-box;
-  height: 6rem; /* Increased height from 4rem to 4.5rem to prevent text cutoff */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   line-height: 1; /* Increased line height for better spacing */
@@ -445,4 +447,13 @@
 .form-row .form-group + .error-text {
   margin-top: 4px;
   grid-column: 1 / span 2;
+}
+
+/* Adjust payment-method dropdown similarly */
+.company-form-container .form-group.payment-method select {
+  /* Add vertical padding so 'g' and other descenders show */
+  padding: 0.75rem var(--spacing-sm, 1rem);
+  min-height: 2.5rem;
+  height: auto;
+  line-height: normal;
 }

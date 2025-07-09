@@ -27,6 +27,9 @@ const CompanyForm = ({ onSubmit }) => {
   const [formError, setFormError] = useState("");
   // Custom form errors
   const [errors, setErrors] = useState({});
+  const [paymentMethod, setPaymentMethod] = useState(
+    country === "SE" ? "bankgiro" : "iban"
+  );
 
   const handleLogoChange = (e) => {
     const file = e.target.files[0];
@@ -291,57 +294,87 @@ const CompanyForm = ({ onSubmit }) => {
           <h3>Payment Information</h3>
         </div>
 
+        {/* Payment Method Selection */}
+        <div className="form-group payment-method">
+          <label htmlFor="paymentMethod">Payment Method</label>
+          <motion.select
+            id="paymentMethod"
+            value={paymentMethod}
+            onChange={e => setPaymentMethod(e.target.value)}
+            variants={fieldVariants}
+          >
+            <option value="bankgiro">Bankgiro</option>
+            <option value="plusgiro">Plusgiro</option>
+            <option value="iban">IBAN & SWIFT</option>
+          </motion.select>
+        </div>
+
         {/* Conditional Banking: Swedish vs International */}
-        {country === "SE" ? (
-          <div className="form-row">
-            <div className="form-group half-width">
-              <label htmlFor="bankgiro">Bankgiro (Optional)</label>
-              <motion.input
-                type="text"
-                id="bankgiro"
-                value={bankgiro}
-                onChange={(e) => setBankgiro(e.target.value)}
-                placeholder="123-4567"
-                variants={fieldVariants}
-              />
-            </div>
-            <div className="form-group half-width">
-              <label htmlFor="plusgiro">Plusgiro (Optional)</label>
-              <motion.input
-                type="text"
-                id="plusgiro"
-                value={plusgiro}
-                onChange={(e) => setPlusgiro(e.target.value)}
-                placeholder="123456-7"
-                variants={fieldVariants}
-              />
-            </div>
+        {paymentMethod === "bankgiro" && (
+          <div className="form-group">
+            <label htmlFor="bankgiro">Bankgiro</label>
+            <motion.input
+              type="text"
+              id="bankgiro"
+              className="payment-input"
+              inputMode="numeric"
+              pattern="[0-9-]*"
+              value={bankgiro}
+              onChange={(e) => setBankgiro(e.target.value.replace(/[^0-9-]/g, ''))}
+              placeholder="1234-5678"
+              variants={fieldVariants}
+            />
+            {errors.bankgiro && <div className="error-text">{errors.bankgiro}</div>}
           </div>
-        ) : (
-          <div className={`form-row ${errors.iban || errors.swift ? 'error' : ''}`}>
-            <div className="form-group half-width">
-              <label htmlFor="iban">IBAN (Required)</label>
+        )}
+
+        {paymentMethod === "plusgiro" && (
+          <div className="form-group">
+            <label htmlFor="plusgiro">Plusgiro</label>
+            <motion.input
+              type="text"
+              id="plusgiro"
+              className="payment-input"
+              inputMode="numeric"
+              pattern="[0-9-]*"
+              value={plusgiro}
+              onChange={(e) => setPlusgiro(e.target.value.replace(/[^0-9-]/g, ''))}
+              placeholder="1234567-8"
+              variants={fieldVariants}
+            />
+            {errors.plusgiro && <div className="error-text">{errors.plusgiro}</div>}
+          </div>
+        )}
+
+        {paymentMethod === "iban" && (
+          <>
+            <div className="form-group">
+              <label htmlFor="iban">IBAN</label>
               <motion.input
                 type="text"
                 id="iban"
+                className="payment-input"
                 value={iban}
                 onChange={(e) => setIban(e.target.value)}
-                placeholder="SEkk bbbb bbbb bbbb bbbb bbbb"
+                placeholder="SE12 3456 7890 1234 5678 90"
                 variants={fieldVariants}
               />
+              {errors.iban && <div className="error-text">{errors.iban}</div>}
             </div>
-            <div className="form-group half-width">
-              <label htmlFor="swift">SWIFT/BIC (Required)</label>
+            <div className="form-group">
+              <label htmlFor="swift">SWIFT/BIC</label>
               <motion.input
                 type="text"
                 id="swift"
+                className="payment-input"
                 value={swift}
                 onChange={(e) => setSwift(e.target.value)}
-                placeholder="XXXXYYZZ"
+                placeholder="AAAASESSXXX"
                 variants={fieldVariants}
               />
+              {errors.swift && <div className="error-text">{errors.swift}</div>}
             </div>
-          </div>
+          </>
         )}
 
         {/* Business Settings */}
