@@ -16,11 +16,14 @@
 .hero-section {
   text-align: center;
   padding: 4rem 2rem;
-  background-color: #e3f2fd; /* light blue tint */
+  background: linear-gradient(to right,#678eef, #1629ff);
   color: #fff;
   border-radius: 8px;
   margin-bottom: 3rem;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+.hero-title{
+  color: #fff;
 }
 .hero-section h1 {
   font-size: 3rem;
@@ -31,16 +34,57 @@
   margin-bottom: 1.5rem;
 }
 
+/* Color Palette Swatches in Hero */
+.palette-container {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+.palette-swatch {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+.palette-primary {
+  background-color: #3498db; /* primary blue */
+}
+.palette-secondary {
+  background-color: #2ecc71; /* secondary green */
+}
+
 /* CTA Button */
 .cta-button {
   display: inline-block;
-  background-color: #007bff; /* blue accent */
-  color: #fff;
+  background-color: white; /* blue accent */
+  color: BLACK;
   text-decoration: none;
   padding: 0.75rem 1.5rem;
   border-radius: 4px;
   font-weight: 600;
   transition: background-color 0.3s ease;
+  border: 1px solid grey; /* subtle border */
+}
+.GSN-button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(to right, #3050f7, #607dff);
+  color: #fff;
+  text-decoration: none;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-size: 1.125rem;
+  font-weight: 700;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.GSN-button:hover {
+  background: linear-gradient(to right, #2038c7, #4062ff);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 .cta-button:hover {
   background-color: #0056b3;

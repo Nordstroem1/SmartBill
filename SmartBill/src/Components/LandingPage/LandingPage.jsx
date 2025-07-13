@@ -25,7 +25,7 @@ const LandingPage = () => (
         tabIndex={0}
         aria-label="Hero Section"
       >
-        <h2>Effortless Invoicing for Businesses & Freelancers</h2>
+        <h2 className="hero-title">Effortless Invoicing for Businesses & Freelancers</h2>
         <Link to="/signup" className="cta-button">
           Start Your Free Trial
         </Link>
@@ -53,7 +53,7 @@ const LandingPage = () => (
         />
         {/* Bullet list of benefits */}
         <motion.ul className="features-list" variants={listVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
-          {["Get paid on time with reminders", "Organize jobs & track time and money", "Easily search for projects", "Sign up easily with Google", "Professional invoices", "Save time"].map(text => (
+          {["Get paid on time with reminders", "Organize jobs & track time and money", "Easily search for projects", "Sign up with Google", "Professional invoices", "Save time"].map(text => (
             <motion.li key={text} variants={itemVariants}>
               {text}
             </motion.li>
@@ -103,7 +103,7 @@ const LandingPage = () => (
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
         >
-          {["Sign up instantly—no credit card needed.", "Enter your details and choose payment options.", "Send your invoice with a click."].map(text => (
+          {["Sign up instantly—no credit card needed.", "Enter your details and choose payment options.", "Send your invoice in no time."].map(text => (
             <motion.li key={text} variants={itemVariants}>
               {text}
             </motion.li>
@@ -119,7 +119,7 @@ const LandingPage = () => (
         tabIndex={0}
         aria-label="Call to Action Section"
       >
-        <Link to="/login" className="cta-button">
+        <Link to="/login" className="GSN-button">
           Get Started Now
         </Link>
       </motion.section>
