@@ -6,6 +6,7 @@ import './Dashboard.css';
 
 function Dashboard() {
     const [user, setUser] = useState(null);
+    const [bounceAll, setBounceAll] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -22,6 +23,11 @@ function Dashboard() {
 
     const handleLogout = async () => {
         await logout();
+    };
+
+    const handleWholeYearClick = () => {
+        setBounceAll(true);
+        setTimeout(() => setBounceAll(false), 600);
     };
 
 //    if (!user) {
@@ -118,16 +124,54 @@ function Dashboard() {
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.5, delay: 0.9 }}
                     >
+                        <motion.button 
+                            className="month-btn whole-year-btn"
+                            initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                            animate={{ 
+                                opacity: 1, 
+                                scale: bounceAll ? [1, 1.1, 1] : 1, 
+                                y: bounceAll ? [0, -10, 0] : 0 
+                            }}
+                            transition={{ 
+                                duration: bounceAll ? 0.6 : 0.5, 
+                                delay: bounceAll ? 0 : 1.0,
+                                type: "spring",
+                                stiffness: 120,
+                                damping: 15
+                            }}
+                            whileHover={{ 
+                                scale: 1.05,
+                                y: -8,
+                                transition: { 
+                                    duration: 0.3,
+                                    type: "spring",
+                                    stiffness: 300,
+                                    damping: 20
+                                }
+                            }}
+                            whileTap={{ 
+                                scale: 0.95,
+                                y: -2,
+                                transition: { duration: 0.1 }
+                            }}
+                            onClick={handleWholeYearClick}
+                        >
+                            Hela året
+                        </motion.button>
                         {['Januari', 'Februari', 'Mars', 'April', 'Maj', 'Juni', 
                           'Juli', 'Augusti', 'September', 'Oktober', 'November', 'December'].map((month, index) => (
                             <motion.button 
                                 key={month}
                                 className="month-btn"
                                 initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                animate={{ 
+                                    opacity: 1, 
+                                    scale: bounceAll ? [1, 1.1, 1] : 1, 
+                                    y: bounceAll ? [0, -10, 0] : 0 
+                                }}
                                 transition={{ 
-                                    duration: 0.5, 
-                                    delay: 1.0 + (0.08 * index),
+                                    duration: bounceAll ? 0.6 : 0.5, 
+                                    delay: bounceAll ? 0.05 * index : 1.1 + (0.08 * index),
                                     type: "spring",
                                     stiffness: 120,
                                     damping: 15
