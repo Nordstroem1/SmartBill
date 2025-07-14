@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@google-cloud/local-auth": "^3.0.1",
-    "framer-motion": "^12.23.0",
+    "framer-motion": "^12.23.5",
     "google-auth-library": "^10.1.0",
     "googleapis": "^150.0.1",
     "react": "^19.1.0",

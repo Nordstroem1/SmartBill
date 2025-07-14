@@ -50,17 +50,6 @@
   margin-top: var(--spacing-md);
 }
 
-/* Responsive design using media queries */
-@media (min-width: 48rem) {
-  .app > .main-content,
-  .main-content {
-    padding: var(--spacing-xl) var(--spacing-lg);
-  }
-  
-  .main-content > * + * {
-    margin-top: var(--spacing-lg);
-  }
-}
 
 @media (min-width: 64rem) {
   .app > .main-content,

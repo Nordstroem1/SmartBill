@@ -10,14 +10,6 @@
   --font-base: 'Roboto', sans-serif;
 }
 
-/* Global Styles */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
-body, .dashboard {
-  color: var(--clr-text);
-  margin: 0;
-  padding: 0;
-}
-
 /* Dashboard Container */
 .dashboard {
   padding: 2rem;
@@ -45,7 +37,7 @@ body, .dashboard {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  border: 3px solid #fff;
+  border: 1px solid #fff;
 }
 .user-details h2 {
   margin: 0;
@@ -83,6 +75,7 @@ body, .dashboard {
   margin-top: 0;
   font-size: 2.25rem;
   font-weight: 700;
+  text-align: center;
 }
 .dashboard-content > p {
   color: #555;
@@ -90,33 +83,81 @@ body, .dashboard {
   margin-bottom: 1.5rem;
 }
 
-/* Cards Grid */
-.dashboard-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
+/* Month Selector */
+.month-selector {
+  text-align: center;
 }
-.dashboard-card {
-  background: var(--clr-card-bg);
-  border-radius: 8px;
-  padding: 1.5rem;
-  border-left: 4px solid var(--clr-secondary);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  transition: box-shadow var(--transition-fast), transform var(--transition-fast);
-  cursor: pointer;
-}
-.dashboard-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-}
-.dashboard-card h3 {
-  margin-top: 0;
-  font-size: 1.25rem;
+.month-selector h2 {
+  margin-bottom: 2.5rem;
+  font-size: 1.625rem;
   font-weight: 600;
+  color: #1f2937;
+  text-align: center;
+  letter-spacing: -0.025em;
 }
-.dashboard-card p {
-  margin: 0.5rem 0 0;
-  color: #666;
+.month-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1rem 0;
+}
+.month-btn {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    0 1px 2px rgba(0, 0, 0, 0.06);
+  position: relative;
+  overflow: hidden;
+  min-height: 65px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: capitalize;
+  letter-spacing: 0.025em;
+  backdrop-filter: blur(10px);
+}
+
+.month-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.month-btn:hover::before {
+  opacity: 1;
+}
+
+.month-btn:hover {
+  color: white;
+  border-color: transparent;
+  box-shadow: 
+    0 10px 15px -3px rgba(59, 130, 246, 0.3),
+    0 4px 6px -2px rgba(59, 130, 246, 0.05);
+  transform: translateY(-2px);
+}
+
+.month-btn:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: 
+    0 4px 6px -1px rgba(59, 130, 246, 0.2),
+    0 2px 4px -1px rgba(59, 130, 246, 0.06);
 }
 
 /* Loading State */
@@ -138,5 +179,19 @@ body, .dashboard {
   }
   .dashboard-cards {
     grid-template-columns: 1fr;
+  }
+  .month-buttons {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.875rem;
+    padding: 0.5rem 0;
+  }
+  .month-btn {
+    padding: 1rem 1.25rem;
+    font-size: 0.95rem;
+    min-height: 60px;
+  }
+  .month-selector h2 {
+    font-size: 1.375rem;
+    margin-bottom: 2rem;
   }
 }

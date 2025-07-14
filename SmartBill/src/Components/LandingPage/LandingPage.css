@@ -132,6 +132,7 @@
   padding-left: 1.75rem;
   margin-bottom: 0.75rem;
   color: #000;
+  font-weight: bold;
 }
 .features-list li:before {
   content: '✔';
@@ -183,6 +184,7 @@
   max-width: 600px;
   margin: 0 auto;
   padding-left: 1.5rem;
+  font-weight: bold;
 }
 .how-it-works-section li {
   margin-bottom: 0.75rem;
@@ -229,11 +231,12 @@
   margin-bottom: 1rem;
 }
 
-/* Promo Section: colored */
+/* Promo Section: centered stacking layout */
 .promo-section {
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-align: center;
   margin-bottom: 3rem;
   background-color: white; /* white background */
   padding: 3rem 2rem;
@@ -244,37 +247,41 @@
 .promo-image {
   max-width: 70%;
   border-radius: 8px;
-  margin-bottom: 1.5rem;
+  margin: 1.5rem 0;
+  order: 2; /* Image goes between title and text */
 }
 .promo-text {
   text-align: center;
   max-width: 800px;
   margin-bottom: 1rem;
   color: black;
+  order: 3; /* Text comes after image */
 }
 .promo-list {
   list-style-type: disc;
   padding-left: 1.5rem;
   max-width: 600px;
+  text-align: left;
+  order: 4; /* List comes last */
 }
 .promo-list li {
   margin-bottom: 0.75rem;
   font-size: 1rem;
   color: black;
 }
+.promo-section h2 {
+  order: 1; /* Title comes first */
+  margin-bottom: 0;
+}
 
+/* Keep stacked layout on all screen sizes */
 @media (min-width: 768px) {
   .promo-section {
-    flex-direction: row;
-    text-align: left;
+    flex-direction: column;
+    text-align: center;
   }
   .promo-image {
-    width: 50%;
-    margin-right: 2rem;
-  }
-  .promo-text,
-  .promo-list {
-    width: 50%;
+    max-width: 60%;
   }
 }
 
@@ -283,12 +290,78 @@
   margin-bottom: 2rem;
 }
 
-/* Responsive Typography */
-@media (max-width: 600px) {
-  .hero-section h1 {
-    font-size: 2.5rem;
+
+
+/* Responsive whitespace for wider screens */
+@media (min-width: 750px) {
+  .landing-container {
+    padding: 2rem;
+    max-width: 1280px;
   }
-  .features-grid {
-    gap: 1rem;
+  
+  .hero-section {
+    padding: 5rem 3rem;
+  }
+  
+  .features-section,
+  .how-it-works-section,
+  .testimonial-section,
+  .promo-section,
+  .landing-footer {
+    padding: 4rem 3rem;
+  }
+  
+  /* Scale down images on wider screens */
+  .features-image,
+  .promo-image {
+    max-width: 50%;
+    height: auto;
+  }
+  
+  .landing-container img {
+    max-width: 70%;
+    height: auto;
+  }
+  
+  /* Full-width footer */
+  .landing-footer {
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    width: 100vw;
+    border-radius: 0;
+  }
+  
+  /* Center text in how it works section */
+  .how-it-works-section ol {
+    text-align: center;
+    list-style-position: inside;
+  }
+  
+  /* Center features section content */
+  .features-section {
+    text-align: center;
+  }
+  
+  .features-image {
+    display: block;
+    margin: 0 auto;
+  }
+  
+  .features-list {
+    text-align: center;
+  }
+  
+  .features-list li {
+    text-align: center;
+    padding-left: 0;
+  }
+  
+  .features-list li:before {
+    position: static;
+    display: inline;
+    margin-right: 0.5rem;
   }
 }
