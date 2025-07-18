@@ -69,7 +69,7 @@
   background: var(--clr-card-bg);
   border-radius: 8px;
   padding: 2rem;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
 }
 .dashboard-content h1 {
   margin-top: 0;
@@ -88,16 +88,156 @@
   text-align: center;
 }
 .month-selector h2 {
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
   font-size: 1.625rem;
   font-weight: 600;
   color: #1f2937;
   text-align: center;
   letter-spacing: -0.025em;
 }
+
+/* Create Job Section */
+.create-job-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.create-job-btn {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 1rem 2rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 4px 6px -1px rgba(59, 130, 246, 0.3),
+    0 2px 4px -1px rgba(59, 130, 246, 0.06),
+    0 8px 25px -5px rgba(59, 130, 246, 0.2);
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.create-job-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.create-job-btn:hover::before {
+  opacity: 1;
+}
+
+.create-job-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 
+    0 10px 15px -3px rgba(59, 130, 246, 0.4),
+    0 4px 6px -2px rgba(59, 130, 246, 0.05),
+    0 20px 40px -10px rgba(59, 130, 246, 0.3);
+}
+
+.create-job-btn:active {
+  transform: translateY(-1px) scale(0.98);
+  box-shadow: 
+    0 4px 6px -1px rgba(59, 130, 246, 0.3),
+    0 2px 4px -1px rgba(59, 130, 246, 0.06);
+}
+
+/* Year Selector */
+.year-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+
+.year-dropdown {
+  padding: 0.75rem 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #374151;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 100px;
+}
+
+.year-dropdown:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.year-dropdown:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* Search Section */
+.search-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.search-input {
+  width: 100%;
+  max-width: 400px;
+  padding: 0.875rem 1.25rem;
+  border: 2px solid #5a5c60;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #262d39;
+  background-color: white;
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 
+    0 0 0 3px rgba(59, 130, 246, 0.2),
+    0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.search-input::placeholder {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+.search-input:hover {
+  border-color: #d1d5db;
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
 .month-buttons {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 1rem;
   max-width: 800px;
   margin: 0 auto;
@@ -108,14 +248,15 @@
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 12px;
   padding: 1.25rem 1.5rem;
-  font-size: 1rem;
-  font-weight: 500;
+  font-size: 1.05rem;
+  font-weight: 550;
   color: #374151;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 
-    0 1px 3px rgba(0, 0, 0, 0.1),
-    0 1px 2px rgba(0, 0, 0, 0.06);
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06),
+    0 8px 25px -5px rgba(0, 0, 0, 0.1);
   position: relative;
   overflow: hidden;
   min-height: 65px;
@@ -197,30 +338,4 @@
   height: 200px;
   font-size: 1.2rem;
   color: var(--clr-text);
-}
-
-/* Responsive */
-@media (max-width: 750px) {
-  .dashboard-header {
-    flex-direction: column;
-    text-align: center;
-    gap: 1rem;
-  }
-  .dashboard-cards {
-    grid-template-columns: 1fr;
-  }
-  .month-buttons {
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 0.875rem;
-    padding: 0.5rem 0;
-  }
-  .month-btn {
-    padding: 1rem 1.25rem;
-    font-size: 0.95rem;
-    min-height: 60px;
-  }
-  .month-selector h2 {
-    font-size: 1.375rem;
-    margin-bottom: 2rem;
-  }
 }
