@@ -21,9 +21,6 @@
 
 /* Main App Container - Flexbox Layout */
 .app {
-  --header-height: 4rem;
-  --footer-height: 3rem;
-  
   display: flex;
   flex-direction: column;
   /* Allow natural content flow */
@@ -48,33 +45,6 @@
 
 .main-content > * + * {
   margin-top: var(--spacing-md);
-}
-
-
-@media (min-width: 64rem) {
-  .app > .main-content,
-  .main-content {
-    padding: var(--spacing-2xl) var(--spacing-2xl);
-  }
-}
-
-/* Fallback for browsers without container query support */
-@supports not (container-type: inline-size) {
-  @media (min-width: 48rem) {
-    .app .main-content,
-    .main-content {
-      padding-inline: var(--spacing-lg);
-      padding-block: var(--spacing-xl);
-    }
-  }
-  
-  @media (min-width: 64rem) {
-    .app .main-content,
-    .main-content {
-      padding-inline: var(--spacing-2xl);
-      padding-block: var(--spacing-2xl);
-    }
-  }
 }
 
 /* Accessibility & Performance Optimizations */

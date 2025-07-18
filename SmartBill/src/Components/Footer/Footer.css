@@ -1,32 +1,20 @@
 .footer {
-    /* Footer at bottom of content flow, not viewport */
-    position: relative;
-    width: 100vw;
-    padding: 1rem;
-    margin-top: 10px; /* 10px margin from content above */
-    box-shadow: 0px -3px 3px 0px rgba(0, 0, 0, 0.1);
-    background-color: white;
-    outline: none;
-    border: none;
-    z-index: 1000; /* Ensure footer stays on top */
-    height: auto; /* Let content determine height */
+  position: relative;
+  margin-top: auto;
+  width: 100%;
+  background-color: white;
+  padding: 1rem;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  font-family: inherit;
 }
 
-.footer-content{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    max-width: var(--max-content-width);
-    margin: 0 auto;
-}
-
-/* Remove any debugging outlines */
-.footer *,
-.footer *:before,
-.footer *:after {
-    outline: none !important;
-    box-shadow: none !important;
+.footer-content p {
+  color: #555;
+  font-size: 1rem;
+  font-family: inherit;
+  margin: 0;
+  padding: 0.8rem;
 }
 
 

@@ -1,11 +1,11 @@
 /* Header Container */
 .header {
+  display: flex;
   position: sticky;
   top: 0;
   z-index: 1000;
   padding: 16px 16px 8px 16px;
   background: transparent;
-  display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
