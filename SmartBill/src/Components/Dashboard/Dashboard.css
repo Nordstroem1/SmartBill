@@ -12,9 +12,9 @@
 
 /* Dashboard Container */
 .dashboard {
-  padding: 2rem;
-  max-width: 1280px;
-  margin: auto;
+  padding: 2rem var(--spacing-sm);
+  max-width: var(--max-content-width);
+  margin: 0 auto;
 }
 
 /* Header */

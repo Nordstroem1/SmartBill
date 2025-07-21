@@ -252,6 +252,7 @@ function JobModal({ isOpen, onClose, selectedMonth, selectedYear }) {
                   ) : (
                     filteredJobs.map((job, index) => (
                       <motion.div
+                        onClick={() => handleEditJob(job)}
                         key={job.id}
                         className="job-card"
                         initial={{ opacity: 0, y: 20 }}
@@ -368,7 +369,7 @@ function JobModal({ isOpen, onClose, selectedMonth, selectedYear }) {
                               </button>
                               <button 
                                 className="cancel-btn"
-                                onClick={handleCancelEdit}
+                                onClick={(e) => { e.stopPropagation(); handleCancelEdit(); }}
                               >
                                 Avbryt
                               </button>

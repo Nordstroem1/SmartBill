@@ -16,6 +16,7 @@ function Dashboard() {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState("");
   const navigate = useNavigate();
+  const [jobsData, setJobsData] = useState([]);
 
   useEffect(() => {
     // Check if user is authenticated
@@ -28,6 +29,20 @@ function Dashboard() {
     const userData = getStoredUser();
     setUser(userData);
   }, [navigate]);
+
+  // Fetch job data to determine which months to display
+  useEffect(() => {
+    // Simulate API call - replace with actual API integration
+    setTimeout(() => {
+      const mockJobs = [
+        { id: 1, title: "Webbdesign för företag", date: "2025-01-15" },
+        { id: 2, title: "Logo design", date: "2025-01-22" },
+        { id: 3, title: "E-handel lösning", date: "2025-01-10" },
+        { id: 4, title: "Mobil app UI/UX", date: "2025-01-28" },
+      ];
+      setJobsData(mockJobs);
+    }, 800);
+  }, []);
 
   const handleLogout = async () => {
     await logout();
@@ -62,11 +77,24 @@ function Dashboard() {
   // Generate year options (from 2025 onwards, up to current year + 5)
   const currentYear = new Date().getFullYear();
   const startYear = 2025;
-  const endYear = Math.max(currentYear + 5, startYear + 10); // At least 10 years from 2025
+  const endYear = Math.max(currentYear + 5, startYear + 10);
   const yearOptions = [];
   for (let i = startYear; i <= endYear; i++) {
     yearOptions.push(i);
   }
+
+  // Month names and filter based on jobs
+  const monthNames = [
+    "Januari", "Februari", "Mars", "April", "Maj", "Juni",
+    "Juli", "Augusti", "September", "Oktober", "November", "December"
+  ];
+  // Determine which months have jobs for the selected year
+  const visibleMonths = monthNames.filter((_, idx) =>
+    jobsData.some(job => {
+      const date = new Date(job.date);
+      return date.getFullYear() === selectedYear && date.getMonth() === idx;
+    })
+  );
 
   //    if (!user) {
   //      return (
@@ -232,20 +260,7 @@ function Dashboard() {
             >
               Hela året
             </motion.button>
-            {[
-              "Januari",
-              "Februari",
-              "Mars",
-              "April",
-              "Maj",
-              "Juni",
-              "Juli",
-              "Augusti",
-              "September",
-              "Oktober",
-              "November",
-              "December",
-            ].map((month, index) => (
+            {visibleMonths.map((month, index) => (
               <motion.button
                 key={month}
                 className="month-btn"
