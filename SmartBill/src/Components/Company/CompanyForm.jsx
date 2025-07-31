@@ -38,6 +38,14 @@ const CompanyForm = ({ onSubmit }) => {
       setLogoPreview(URL.createObjectURL(file));
     }
   };
+  // Clear selected logo and preview
+  const handleLogoRemove = () => {
+    setLogo(null);
+    setLogoPreview(null);
+    // reset file input value if needed
+    const input = document.getElementById('logo');
+    if (input) input.value = '';
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -126,12 +134,21 @@ const CompanyForm = ({ onSubmit }) => {
               {logo ? "Change Logotype" : "Add Logotype"}
             </label>
             {logoPreview && (
-              <motion.img
-                src={logoPreview}
-                alt="Logo Preview"
-                className="logo-preview"
-                variants={fieldVariants}
-              />
+              <div className="logo-preview-container">
+                <motion.img
+                  src={logoPreview}
+                  alt="Logo Preview"
+                  className="logo-preview"
+                  variants={fieldVariants}
+                />
+                <button
+                  type="button"
+                  className="remove-logo-btn"
+                  onClick={handleLogoRemove}
+                >
+                  Remove
+                </button>
+              </div>
             )}
           </div>
         </div>

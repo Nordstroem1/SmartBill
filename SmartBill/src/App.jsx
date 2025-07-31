@@ -8,6 +8,7 @@ import CompanyForm from './Components/Company/CompanyForm'
 import LandingPage from './Components/LandingPage/LandingPage'
 import ProtectedRoute from './Components/ProtectedRoute/ProtectedRoute'
 import { isAuthenticated } from './utils/auth'
+import LandingPage2 from './Components/SecondlandingPage/LandingPage2'
 
 function App() {
 
@@ -18,6 +19,7 @@ function App() {
         <main className="main-content">
           <Routes>
             <Route path="/" element={<LandingPage />} />
+            <Route path="/landing2" element={<LandingPage2 />} />
             <Route path="/login" element={<Login />} />
             <Route 
               path="/dashboard" 

@@ -5,7 +5,6 @@
 /* CSS Custom Properties for Design System */
 :root {
   --max-content-width: 1200px;
-  --max-text-width: 65ch;
   --spacing-xs: 0.5rem;
   --spacing-sm: 1rem;
   --spacing-md: 1.5rem;

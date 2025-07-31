@@ -239,10 +239,17 @@ function JobModal({ isOpen, onClose, selectedMonth, selectedYear }) {
 
             <div className="job-modal-body">
               {loading ? (
-                <div className="job-loading">
-                  <div className="loading-spinner"></div>
-                  <p>Laddar jobb...</p>
-                </div>
+            <div className="job-loading">
+              <div className="spinner">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+              <p>Laddar jobb...</p>
+            </div>
               ) : (
                 <div className="job-list">
                   {filteredJobs.length === 0 ? (
