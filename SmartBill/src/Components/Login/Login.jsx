@@ -8,6 +8,75 @@ const Login = () => {
   const navigate = useNavigate();
   const { initiateGoogleAuth, handleAuthCallback, isLoading, error } = useGoogleAuth();
 
+  // Function to send Google code to your API
+  const sendGoogleCodeToAPI = async (googleCode) => {
+    console.log('Attempting to send Google code:', googleCode);
+    console.log('Request payload:', { googeCode: googleCode });
+    
+    // First, let's test if the backend is reachable with a simple GET request
+    try {
+      console.log('Testing backend connectivity...');
+      const testResponse = await fetch('https://localhost:7094/api/User', {
+        method: 'GET',
+        mode: 'cors'
+      });
+      console.log('Backend connectivity test result:', testResponse.status);
+    } catch (testError) {
+      console.log('Backend connectivity test failed:', testError.message);
+    }
+    
+    try {
+      const response = await fetch('https://localhost:7094/api/User/Login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        mode: 'cors',
+        body: JSON.stringify({
+          googeCode: googleCode  
+        })
+      });
+
+      console.log('Response status:', response.status);
+      console.log('Response headers:', [...response.headers.entries()]);
+      
+      if (response.ok) {
+        console.log('Success!');
+        const userData = await response.json();
+        console.log('User data received:', userData);
+        return userData;
+      } else {
+        // Get the error details
+        let errorMessage = `HTTP error! status: ${response.status}`;
+        let errorDetails = '';
+        
+        try {
+          const errorData = await response.json();
+          console.log('Error response JSON:', errorData);
+          errorMessage = errorData.message || errorData.error || errorData.title || errorMessage;
+          errorDetails = JSON.stringify(errorData, null, 2);
+        } catch {
+          try {
+            const errorText = await response.text();
+            console.log('Error response text:', errorText);
+            if (errorText) {
+              errorMessage = errorText;
+              errorDetails = errorText;
+            }
+          } catch {
+            console.log('Could not parse error response');
+          }
+        }
+        
+        console.error('Backend error details:', errorDetails);
+        throw new Error(errorMessage);
+      }
+    } catch (error) {
+      console.error('Error sending Google code to API:', error);
+      throw error;
+    }
+  };
+
   // Handle OAuth callback
   useEffect(() => {
     const code = searchParams.get('code');
@@ -20,14 +89,15 @@ const Login = () => {
     }
 
     if (code && state) {
-      handleAuthCallback(code, state)
+      // Send the Google code to your API
+      sendGoogleCodeToAPI(code)
         .then((userData) => {
           console.log('Authentication successful:', userData);
           // Redirect to dashboard after successful login
           navigate('/dashboard');
         })
         .catch((err) => {
-          console.error('Authentication failed');
+          console.error('Authentication failed:', err);
         });
     }
   }, [searchParams, handleAuthCallback, navigate]);
