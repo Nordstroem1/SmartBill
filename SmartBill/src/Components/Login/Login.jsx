@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useGoogleAuth } from '../../hooks/useGoogleAuth';
 import "./Login.css";
@@ -6,73 +6,85 @@ import "./Login.css";
 const Login = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const [backendError, setBackendError] = useState(null);
   const { initiateGoogleAuth, handleAuthCallback, isLoading, error } = useGoogleAuth();
+  const hasProcessedCode = useRef(false);
 
   // Function to send Google code to your API
-  const sendGoogleCodeToAPI = async (googleCode) => {
-    console.log('Attempting to send Google code:', googleCode);
-    console.log('Request payload:', { googeCode: googleCode });
-    
-    // First, let's test if the backend is reachable with a simple GET request
-    try {
-      console.log('Testing backend connectivity...');
-      const testResponse = await fetch('https://localhost:7094/api/User', {
-        method: 'GET',
-        mode: 'cors'
-      });
-      console.log('Backend connectivity test result:', testResponse.status);
-    } catch (testError) {
-      console.log('Backend connectivity test failed:', testError.message);
-    }
+  const sendGoogleCodeToAPI = async (GoogleCode) => {
+    // Clear any previous backend errors
+    setBackendError(null);
     
     try {
-      const response = await fetch('https://localhost:7094/api/User/Login', {
+      // Get the PKCE code verifier from sessionStorage
+      const codeVerifier = sessionStorage.getItem('google_code_verifier');
+      
+      const requestBody = {
+        GoogleCode: GoogleCode,
+        ProofKeyForCodeExchange: codeVerifier
+      };
+
+      const response = await fetch('https://localhost:7094/api/User/Create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         mode: 'cors',
-        body: JSON.stringify({
-          googeCode: googleCode  
-        })
+        credentials: 'include', 
+        body: JSON.stringify(requestBody)
       });
-
-      console.log('Response status:', response.status);
-      console.log('Response headers:', [...response.headers.entries()]);
+      console.log("Google code sent to API:", GoogleCode);
+      console.log("PKCE code verifier sent:", codeVerifier ? "Present" : "Missing");
       
       if (response.ok) {
-        console.log('Success!');
         const userData = await response.json();
-        console.log('User data received:', userData);
         return userData;
       } else {
-        // Get the error details
+        console.log('API Error - Status:', response.status);
+        console.log('API Error - Headers:', [...response.headers.entries()]);
+        
         let errorMessage = `HTTP error! status: ${response.status}`;
-        let errorDetails = '';
+        let rawResponse = null;
         
         try {
-          const errorData = await response.json();
-          console.log('Error response JSON:', errorData);
-          errorMessage = errorData.message || errorData.error || errorData.title || errorMessage;
-          errorDetails = JSON.stringify(errorData, null, 2);
-        } catch {
-          try {
-            const errorText = await response.text();
-            console.log('Error response text:', errorText);
-            if (errorText) {
-              errorMessage = errorText;
-              errorDetails = errorText;
+          // First, clone the response to read it multiple times if needed
+          const responseClone = response.clone();
+          const responseText = await response.text();
+          
+          console.log('Raw API response:', responseText);
+          
+          // Try to parse as JSON first
+          if (responseText.trim()) {
+            try {
+              const errorData = JSON.parse(responseText);
+              console.log('Parsed JSON error:', errorData);
+              
+              // Check for different possible error message fields
+              errorMessage = errorData.message || 
+                           errorData.error || 
+                           errorData.title || 
+                           errorData.detail ||
+                           errorData.errors ||
+                           responseText;
+            } catch (jsonParseError) {
+              console.log('Not valid JSON, using raw text');
+              // If it's not JSON, use the raw text
+              errorMessage = responseText;
             }
-          } catch {
-            console.log('Could not parse error response');
           }
+          
+        } catch (readError) {
+          console.error('Could not read response:', readError);
+          errorMessage = `HTTP ${response.status}: Could not read error response`;
         }
         
-        console.error('Backend error details:', errorDetails);
+        console.error('Final error message to display:', errorMessage);
+        setBackendError(errorMessage);
         throw new Error(errorMessage);
       }
     } catch (error) {
       console.error('Error sending Google code to API:', error);
+      setBackendError(error.message);
       throw error;
     }
   };
@@ -88,19 +100,21 @@ const Login = () => {
       return;
     }
 
-    if (code && state) {
+    if (code && state && !hasProcessedCode.current) {
+      hasProcessedCode.current = true;
       // Send the Google code to your API
       sendGoogleCodeToAPI(code)
         .then((userData) => {
           console.log('Authentication successful:', userData);
-          // Redirect to dashboard after successful login
-          navigate('/dashboard');
+          // Redirect to company page after successful login
+          navigate('/company');
         })
         .catch((err) => {
           console.error('Authentication failed:', err);
+          hasProcessedCode.current = false; // Reset on error to allow retry
         });
     }
-  }, [searchParams, handleAuthCallback, navigate]);
+  }, [searchParams, navigate]);
 
   const handleGoogleLogin = async () => {
     try {
@@ -134,6 +148,13 @@ const Login = () => {
           {error && (
             <div className="error-message">
               {error}
+            </div>
+          )}
+
+          {backendError && (
+            <div className="backend-error-message">
+              <div className="error-header">Login Error</div>
+              <div className="error-details">{backendError}</div>
             </div>
           )}
 
