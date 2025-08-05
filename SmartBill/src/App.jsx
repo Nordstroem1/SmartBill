@@ -9,6 +9,7 @@ import LandingPage from './Components/LandingPage/LandingPage'
 import ProtectedRoute from './Components/ProtectedRoute/ProtectedRoute'
 import { isAuthenticated } from './utils/auth'
 import LandingPage2 from './Components/SecondlandingPage/LandingPage2'
+import Register from './Components/Register/Register'
 
 function App() {
 
@@ -21,6 +22,7 @@ function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/landing2" element={<LandingPage2 />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
             <Route 
               path="/dashboard" 
               element={

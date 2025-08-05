@@ -1,16 +1,19 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useGoogleAuth } from '../../hooks/useGoogleAuth';
-import "./Login.css";
+import RoleSelection from '../RoleSelection/RoleSelection';
+import "./Register.css";
 
-const Login = () => {
+const Register = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [backendError, setBackendError] = useState(null);
+  const [showRoleSelection, setShowRoleSelection] = useState(false);
+  const [userData, setUserData] = useState(null);
   const { initiateGoogleAuth, handleAuthCallback, isLoading, error } = useGoogleAuth();
   const hasProcessedCode = useRef(false);
 
-  // Function to send Google code to your API for login
+  // Function to send Google code to your API for user creation
   const sendGoogleCodeToAPI = async (GoogleCode) => {
     // Clear any previous backend errors
     setBackendError(null);
@@ -24,7 +27,7 @@ const Login = () => {
         ProofKeyForCodeExchange: codeVerifier
       };
 
-      const response = await fetch('https://localhost:7094/api/User/Login', {
+      const response = await fetch('https://localhost:7094/api/User/Create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -45,8 +48,9 @@ const Login = () => {
           localStorage.setItem('SmartBill_auth_RefreshToken', userData.refreshToken);
         }
         
-        // For login, redirect user directly to dashboard after successful authentication
-        navigate('/dashboard');
+        // Always show role selection for new users
+        setUserData(userData);
+        setShowRoleSelection(true);
         
         return userData;
       } else {
@@ -77,87 +81,95 @@ const Login = () => {
           errorMessage = `HTTP ${response.status}: Could not read error response`;
         }
         
-        console.error('Final error message to display:', errorMessage);
+        console.error('Register error:', errorMessage);
         setBackendError(errorMessage);
         throw new Error(errorMessage);
       }
     } catch (error) {
-      console.error('Error sending Google code to API:', error);
-      setBackendError(error.message);
+      console.error('Error in sendGoogleCodeToAPI:', error);
+      
+      if (!backendError) {
+        setBackendError(error.message || 'An unexpected error occurred during registration');
+      }
+      
       throw error;
     }
   };
 
-  // Handle OAuth callback
+  // Handle Google OAuth callback
   useEffect(() => {
     const code = searchParams.get('code');
     const state = searchParams.get('state');
-    const errorParam = searchParams.get('error');
+    const error = searchParams.get('error');
 
-    if (errorParam) {
-      console.error('OAuth error:', errorParam);
+    if (error) {
+      console.error('OAuth error:', error);
+      setBackendError(`Authentication failed: ${error}`);
       return;
     }
 
-    if (code && state && !hasProcessedCode.current) {
+    if (code && !hasProcessedCode.current) {
       hasProcessedCode.current = true;
-      // Send the Google code to your API
+      
+      console.log('Processing OAuth code for registration:', code);
+      
       sendGoogleCodeToAPI(code)
         .then((userData) => {
-          // Login successful, redirect to dashboard
-          console.log('Authentication successful:', userData);
+          navigate('/register', { replace: true });
         })
-        .catch((err) => {
-          console.error('Authentication failed:', err);
-          hasProcessedCode.current = false; // Reset on error to allow retry
+        .catch((error) => {
+          console.error('Registration failed:', error);
+          // Clear the URL parameters even on error
+          navigate('/register', { replace: true });
         });
     }
   }, [searchParams, navigate]);
 
-  const handleGoogleLogin = async () => {
-    try {
-      await initiateGoogleAuth();
-    } catch (err) {
-      console.error("Google login failed:", err);
+  const handleGoogleRegister = () => {
+    setBackendError(null);
+    initiateGoogleAuth();
+  };
+
+  const redirectBasedOnRole = (role) => {
+    if (role === 'BusinessOwner') {
+        navigate('/company');
+    } else {
+        navigate('/dashboard');
     }
   };
 
+  const handleRoleSelection = (role, updatedUserData) => {
+    console.log('Role selected:', role, updatedUserData);
+    setShowRoleSelection(false);
+    redirectBasedOnRole(role);
+  };
+
   return (
-    <div className="login-container">
-      <div className="login-image">
-        <img
-          src="https://res.cloudinary.com/dhpjnh2q0/image/upload/v1754385756/10040776_vkiw0o.jpg"
-          alt="Login illustration"
+    <div className="register-container">
+      <div className="register-content">
+        <img 
+          src="https://res.cloudinary.com/dhpjnh2q0/image/upload/v1754384355/12085250_20944064_mfselk.jpg" 
+          alt="SmartBill" 
           className="hero-image"
         />
-      </div>
-      <div className="login-content">
-        <div className="login-form">
-          <div className="login-text">
-            <h1>Welcome Back to SmartBill</h1>
-            <p>
-              Manage your work and invoices easily. Sign in to get started.
-            </p>
+        
+        <div className="register-form">
+          <div className="register-text">
+            <h1>Create Your Account</h1>
+            <p>Join SmartBill to manage your invoices and business efficiently</p>
           </div>
+
+          {(backendError || error) && (
+            <div className="error-message">
+              {backendError || error}
+            </div>
+          )}
 
           <div className="separator"></div>
 
-          {error && (
-            <div className="error-message">
-              {error}
-            </div>
-          )}
-
-          {backendError && (
-            <div className="backend-error-message">
-              <div className="error-header">Login Error</div>
-              <div className="error-details">{backendError}</div>
-            </div>
-          )}
-
           <button 
-            className="google-login-btn" 
-            onClick={handleGoogleLogin}
+            className="google-register-btn"
+            onClick={handleGoogleRegister}
             disabled={isLoading}
           >
             {isLoading ? (
@@ -194,16 +206,23 @@ const Login = () => {
               />
             </svg>
             )}
-            {isLoading ? 'Logging in...' : 'Continue with Google'}
+            {isLoading ? 'Creating account...' : 'Sign up with Google'}
           </button>
 
-          <div className="login-footer">
-            <p>Don't have an account? <a href="/register">Sign up here</a></p>
+          <div className="register-footer">
+            <p>Already have an account? <a href="/login">Sign in here</a></p>
           </div>
         </div>
       </div>
+
+      {showRoleSelection && (
+        <RoleSelection
+          onRoleSelect={handleRoleSelection}
+          userData={userData}
+        />
+      )}
     </div>
   );
 };
 
-export default Login;
+export default Register;
