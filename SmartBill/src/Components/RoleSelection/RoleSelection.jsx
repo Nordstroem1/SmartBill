@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import apiClient from '../../utils/apiClient';
 import './RoleSelection.css';
 
 const RoleSelection = ({ onRoleSelect, userData }) => {
@@ -24,28 +25,8 @@ const RoleSelection = ({ onRoleSelect, userData }) => {
     setError(null);
     
     try {
-      // Get auth token from cookies or localStorage
-      const authTokenFromCookie = document.cookie
-        .split(';')
-        .find(c => c.trim().startsWith('SmartBill_auth_token='))
-        ?.split('=')[1];
-      
-      const authTokenFromStorage = localStorage.getItem('SmartBill_auth_token');
-      const authToken = authTokenFromCookie || authTokenFromStorage;
-      
-      const headers = {
-        'Content-Type': 'application/json',
-      };
-      
-      // Send token in Authorization header
-      if (authToken) {
-        headers['Authorization'] = `Bearer ${authToken}`;
-      }
-      
-      const response = await fetch('https://localhost:7094/api/User/ChangeRole', {
+      const response = await apiClient.request('https://localhost:7094/api/User/ChangeRole', {
         method: 'POST',
-        headers: headers,
-        credentials: 'include',
         body: JSON.stringify({
           UserId: userData.id,
           NewRole: role === 'BusinessOwner' ? 1 : 0

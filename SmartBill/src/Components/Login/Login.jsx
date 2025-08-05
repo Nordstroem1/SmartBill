@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useGoogleAuth } from '../../hooks/useGoogleAuth';
+import { useAuth } from '../../hooks/useAuth.jsx';
 import "./Login.css";
 
 const Login = () => {
@@ -8,6 +9,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [backendError, setBackendError] = useState(null);
   const { initiateGoogleAuth, handleAuthCallback, isLoading, error } = useGoogleAuth();
+  const { login } = useAuth(); // Add useAuth hook
   const hasProcessedCode = useRef(false);
 
   // Function to send Google code to your API for login
@@ -44,6 +46,9 @@ const Login = () => {
         if (userData.refreshToken) {
           localStorage.setItem('SmartBill_auth_RefreshToken', userData.refreshToken);
         }
+        
+        // Update auth context with user data
+        login(userData);
         
         // For login, redirect user directly to dashboard after successful authentication
         navigate('/dashboard');

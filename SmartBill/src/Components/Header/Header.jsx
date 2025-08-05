@@ -1,13 +1,32 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth.jsx';
 import '../../index.css';
 import './Header.css';
 
 const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const { logout, user, isAuthenticated } = useAuth();
+    const navigate = useNavigate();
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
+    };
+
+    const handleLogout = async () => {
+        try {
+            await logout();
+            setIsMenuOpen(false); // Close menu after logout
+            navigate('/'); // Redirect to landing page
+        } catch (error) {
+            console.error('Logout failed:', error);
+        }
+    };
+
+    const handleNavigation = (path) => {
+        navigate(path);
+        setIsMenuOpen(false); // Close menu after navigation
     };
 
     return (
@@ -97,6 +116,61 @@ const Header = () => {
                         </AnimatePresence>
                     </motion.button>
                 </div>
+                
+                {/* Mobile Menu */}
+                <AnimatePresence>
+                    {isMenuOpen && (
+                        <motion.div
+                            className="mobile-menu"
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.3 }}
+                        >
+                            <div className="menu-content">
+                                {isAuthenticated ? (
+                                    // Authenticated user menu
+                                    <>
+                                        {user && (
+                                            <div className="user-info">
+                                                <p>Welcome, {user.name || user.email}</p>
+                                                <p className="user-role">{user.role}</p>
+                                            </div>
+                                        )}
+                                        <button 
+                                            className="nav-btn dashboard-btn"
+                                            onClick={() => handleNavigation('/dashboard')}
+                                        >
+                                            Dashboard
+                                        </button>
+                                        <button 
+                                            className="nav-btn logout-btn"
+                                            onClick={handleLogout}
+                                        >
+                                            Logout
+                                        </button>
+                                    </>
+                                ) : (
+                                    // Non-authenticated user menu
+                                    <>
+                                        <button 
+                                            className="nav-btn login-btn"
+                                            onClick={() => handleNavigation('/login')}
+                                        >
+                                            Login
+                                        </button>
+                                        <button 
+                                            className="nav-btn register-btn"
+                                            onClick={() => handleNavigation('/register')}
+                                        >
+                                            Register
+                                        </button>
+                                    </>
+                                )}
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </motion.div>
         </header>
     );

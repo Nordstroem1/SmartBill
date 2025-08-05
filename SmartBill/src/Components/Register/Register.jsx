@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useGoogleAuth } from '../../hooks/useGoogleAuth';
+import { useAuth } from '../../hooks/useAuth.jsx';
 import RoleSelection from '../RoleSelection/RoleSelection';
 import "./Register.css";
 
@@ -10,12 +11,11 @@ const Register = () => {
   const [backendError, setBackendError] = useState(null);
   const [showRoleSelection, setShowRoleSelection] = useState(false);
   const [userData, setUserData] = useState(null);
-  const { initiateGoogleAuth, handleAuthCallback, isLoading, error } = useGoogleAuth();
+  const { initiateGoogleAuth, isLoading, error } = useGoogleAuth();
+  const { login } = useAuth(); // Add useAuth hook
   const hasProcessedCode = useRef(false);
 
-  // Function to send Google code to your API for user creation
   const sendGoogleCodeToAPI = async (GoogleCode) => {
-    // Clear any previous backend errors
     setBackendError(null);
     
     try {
@@ -47,6 +47,9 @@ const Register = () => {
         if (userData.refreshToken) {
           localStorage.setItem('SmartBill_auth_RefreshToken', userData.refreshToken);
         }
+        
+        // Update auth context with user data
+        login(userData);
         
         // Always show role selection for new users
         setUserData(userData);

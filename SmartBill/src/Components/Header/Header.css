@@ -169,3 +169,112 @@
     height: 24px;
   }
 }
+
+/* Mobile Menu */
+.mobile-menu {
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  margin-top: 8px;
+  overflow: hidden;
+}
+
+.menu-content {
+  padding: 16px;
+}
+
+.user-info {
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.user-info p {
+  margin: 0 0 4px 0;
+  color: #1f2937;
+  font-weight: 500;
+}
+
+.user-role {
+  font-size: 14px;
+  color: #6b7280;
+  text-transform: capitalize;
+}
+
+/* Navigation Buttons */
+.nav-btn {
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.nav-btn:last-child {
+  margin-bottom: 0;
+}
+
+/* Dashboard Button */
+.dashboard-btn {
+  background: #3b82f6;
+  color: white;
+}
+
+.dashboard-btn:hover {
+  background: #2563eb;
+}
+
+/* Logout Button */
+.logout-btn {
+  background: #dc2626;
+  color: white;
+}
+
+.logout-btn:hover {
+  background: #b91c1c;
+}
+
+/* Login Button */
+.login-btn {
+  background: #10b981;
+  color: white;
+}
+
+.login-btn:hover {
+  background: #059669;
+}
+
+/* Register Button */
+.register-btn {
+  background: #8b5cf6;
+  color: white;
+}
+
+.register-btn:hover {
+  background: #7c3aed;
+}
+
+/* Auth Loading */
+.auth-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  color: #6b7280;
+}
+
+.auth-loading .spinner {
+  width: 35px;
+  height: 35px;
+  margin-bottom: 16px;
+}
+
+.auth-loading p {
+  margin: 0;
+  font-size: 14px;
+}
