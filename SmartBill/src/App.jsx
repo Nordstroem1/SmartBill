@@ -8,8 +8,10 @@ import Login from './Components/Login/Login'
 import CompanyForm from './Components/Company/CompanyForm'
 import LandingPage from './Components/LandingPage/LandingPage'
 import ProtectedRoute from './Components/ProtectedRoute/ProtectedRoute'
-import LandingPage2 from './Components/SecondlandingPage/LandingPage2'
 import Register from './Components/Register/Register'
+import PricingSelection from './Components/PricingSelection/PricingSelection'
+import SubscriptionComplete from './Components/SubscriptionComplete/SubscriptionComplete'
+import SubscriptionSuccess from './Components/SubscriptionSuccess/SubscriptionSuccess'
 
 function App() {
 
@@ -21,9 +23,32 @@ function App() {
           <main className="main-content">
             <Routes>
               <Route path="/" element={<LandingPage />} />
-              <Route path="/landing2" element={<LandingPage2 />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route 
+                path="/pricing-selection" 
+                element={
+                  <ProtectedRoute>
+                    <PricingSelection />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/subscription/complete" 
+                element={
+                  <ProtectedRoute>
+                    <SubscriptionComplete />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/subscription/success" 
+                element={
+                  <ProtectedRoute>
+                    <SubscriptionSuccess />
+                  </ProtectedRoute>
+                } 
+              />
               <Route 
                 path="/dashboard" 
                 element={

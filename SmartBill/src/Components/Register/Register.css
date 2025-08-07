@@ -41,6 +41,47 @@
   line-height: 1.5;
 }
 
+/* Plan Indicator */
+.plan-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  margin: 16px 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.plan-indicator.free-plan {
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+  border: 1.5px solid #0ea5e9;
+  color: #0369a1;
+}
+
+.plan-indicator.pro-plan {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  border: 1.5px solid #f59e0b;
+  color: #92400e;
+}
+
+.plan-icon {
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+
+.plan-text {
+  font-weight: 600;
+  text-align: center;
+}
+
+.plan-details {
+  font-size: 12px;
+  opacity: 0.8;
+  font-weight: 400;
+}
+
 /* Separator Line */
 .separator {
   width: 100%;

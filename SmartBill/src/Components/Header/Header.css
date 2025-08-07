@@ -58,6 +58,12 @@
   margin: 0;
   white-space: nowrap;
   line-height: 1.2;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.logo-text:hover {
+  transform: scale(1.05);
 }
 
 /* Hamburger Button */
@@ -250,12 +256,30 @@
 
 /* Register Button */
 .register-btn {
-  background: #8b5cf6;
+  background: #0f12ea;
   color: white;
 }
 
 .register-btn:hover {
   background: #7c3aed;
+}
+
+/* Desktop Navigation Buttons Override */
+@media (min-width: 1024px) {
+  .nav-btn {
+    padding: 8px 12px !important;
+    font-size: 16px !important;
+    margin-bottom: 10px !important;
+    font-weight: 600 !important;
+    max-width: 650px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    display: block !important;
+  }
+  
+  .nav-btn:last-child {
+    margin-bottom: 0 !important;
+  }
 }
 
 /* Auth Loading */

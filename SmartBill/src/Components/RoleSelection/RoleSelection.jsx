@@ -25,25 +25,46 @@ const RoleSelection = ({ onRoleSelect, userData }) => {
     setError(null);
     
     try {
-      const response = await apiClient.request('https://localhost:7094/api/User/ChangeRole', {
+      // Get the auth token from localStorage
+      const authToken = localStorage.getItem('SmartBill_auth_token');
+      
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+      
+      // Add Authorization header if token exists
+      if (authToken) {
+        headers['Authorization'] = `Bearer ${authToken}`;
+      }
+      
+      // Make direct API call to change role, preserving all authentication
+      const response = await fetch('https://localhost:7094/api/User/ChangeRole', {
         method: 'POST',
+        headers: headers,
+        credentials: 'include', // This preserves cookies
         body: JSON.stringify({
-          UserId: userData.id,
-          NewRole: role === 'BusinessOwner' ? 1 : 0
+          NewRole: role === 'BusinessOwner' ? 0 : 1  // UserRole enum: BusinessOwner = 0, Employee = 1
         })
       });
 
       if (response.ok) {
         const updatedUser = await response.json();
-        console.log('Role updated successfully:', updatedUser);
+        
+        // Update localStorage with any new tokens from the response
+        if (updatedUser.accessToken) {
+          localStorage.setItem('SmartBill_auth_token', updatedUser.accessToken);
+        }
+        if (updatedUser.refreshToken) {
+          localStorage.setItem('SmartBill_auth_RefreshToken', updatedUser.refreshToken);
+        }
+        
+        // Pass the updated user data back
         onRoleSelect(role, updatedUser);
       } else {
         const errorText = await response.text();
-        console.error('Role update failed:', errorText);
         throw new Error(errorText || 'Failed to update role');
       }
     } catch (err) {
-      console.error('Role selection error:', err);
       setError('Failed to select role. Please try again.');
     } finally {
       setIsLoading(false);

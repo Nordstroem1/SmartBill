@@ -50,7 +50,7 @@ const Login = () => {
         // Update auth context with user data
         login(userData);
         
-        // For login, redirect user directly to dashboard after successful authentication
+        // Redirect to dashboard after successful login
         navigate('/dashboard');
         
         return userData;
@@ -106,21 +106,37 @@ const Login = () => {
 
     if (code && state && !hasProcessedCode.current) {
       hasProcessedCode.current = true;
-      // Send the Google code to your API
-      sendGoogleCodeToAPI(code)
-        .then((userData) => {
-          // Login successful, redirect to dashboard
-          console.log('Authentication successful:', userData);
-        })
-        .catch((err) => {
-          console.error('Authentication failed:', err);
-          hasProcessedCode.current = false; // Reset on error to allow retry
-        });
+      
+      // Check if this is a login flow
+      const authFlowType = sessionStorage.getItem('auth_flow_type');
+      
+      if (authFlowType === 'login') {
+        // Send the Google code to your API for login
+        sendGoogleCodeToAPI(code)
+          .then((userData) => {
+            // Login successful, redirect to dashboard
+            console.log('Authentication successful:', userData);
+            // Clean up the flow type
+            sessionStorage.removeItem('auth_flow_type');
+          })
+          .catch((err) => {
+            console.error('Authentication failed:', err);
+            sessionStorage.removeItem('auth_flow_type');
+            hasProcessedCode.current = false; // Reset on error to allow retry
+          });
+      } else {
+        // If not a login flow, redirect to register
+        const currentParams = new URLSearchParams(window.location.search);
+        navigate(`/register?${currentParams.toString()}`, { replace: true });
+      }
     }
   }, [searchParams, navigate]);
 
   const handleGoogleLogin = async () => {
     try {
+      // Store a flag to indicate this is a login flow
+      sessionStorage.setItem('auth_flow_type', 'login');
+      
       await initiateGoogleAuth();
     } catch (err) {
       console.error("Google login failed:", err);

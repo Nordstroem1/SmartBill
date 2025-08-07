@@ -114,35 +114,59 @@ const Register = () => {
     if (code && !hasProcessedCode.current) {
       hasProcessedCode.current = true;
       
-      console.log('Processing OAuth code for registration:', code);
+      // Check if this is a registration flow
+      const authFlowType = sessionStorage.getItem('auth_flow_type');
       
-      sendGoogleCodeToAPI(code)
-        .then((userData) => {
-          navigate('/register', { replace: true });
-        })
-        .catch((error) => {
-          console.error('Registration failed:', error);
-          // Clear the URL parameters even on error
-          navigate('/register', { replace: true });
-        });
+      if (authFlowType === 'register') {
+        console.log('Processing OAuth code for registration:', code);
+        
+        sendGoogleCodeToAPI(code)
+          .then((userData) => {
+            // Clean up the flow type
+            sessionStorage.removeItem('auth_flow_type');
+            navigate('/register', { replace: true });
+          })
+          .catch((error) => {
+            console.error('Registration failed:', error);
+            sessionStorage.removeItem('auth_flow_type');
+            // Clear the URL parameters even on error
+            navigate('/register', { replace: true });
+          });
+      } else {
+        // If not a register flow, redirect to login
+        const currentParams = new URLSearchParams(window.location.search);
+        navigate(`/login?${currentParams.toString()}`, { replace: true });
+      }
     }
   }, [searchParams, navigate]);
 
   const handleGoogleRegister = () => {
     setBackendError(null);
+    
+    // Store a flag to indicate this is a registration flow
+    sessionStorage.setItem('auth_flow_type', 'register');
+    
     initiateGoogleAuth();
   };
 
   const redirectBasedOnRole = (role) => {
     if (role === 'BusinessOwner') {
-        navigate('/company');
+      // Business Owners go to pricing selection
+      navigate('/pricing-selection');
     } else {
-        navigate('/dashboard');
+      // Employees go directly to dashboard
+      navigate('/dashboard');
     }
   };
 
   const handleRoleSelection = (role, updatedUserData) => {
     console.log('Role selected:', role, updatedUserData);
+    
+    // Update the auth context with the new role
+    if (updatedUserData) {
+      login(updatedUserData);
+    }
+    
     setShowRoleSelection(false);
     redirectBasedOnRole(role);
   };
@@ -213,7 +237,11 @@ const Register = () => {
           </button>
 
           <div className="register-footer">
-            <p>Already have an account? <a href="/login">Sign in here</a></p>
+            <p>Already have an account? 
+              <a href="/login">
+                Sign in here
+              </a>
+            </p>
           </div>
         </div>
       </div>

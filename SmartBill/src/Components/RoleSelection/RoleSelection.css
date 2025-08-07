@@ -227,3 +227,18 @@
   50% { transform: rotate(45deg) rotateX(-385deg) rotateY(25deg); }
   100% { transform: rotate(45deg) rotateX(-385deg) rotateY(385deg); }
 }
+
+.role-mock-notice {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 8px;
+  padding: 12px;
+  margin: 20px 0;
+  color: #856404;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.role-mock-notice p {
+  margin: 0;
+}

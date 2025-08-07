@@ -1,130 +1,134 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-
+import { useNavigate } from "react-router-dom";
 import "./LandingPage.css";
 
-// Variants for scroll-in animations
-const sectionVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
-};
-// Variants for list animations
-const listVariants = { visible: { transition: { staggerChildren: 0.2 } }, hidden: {} };
-const itemVariants = { hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } };
+const LandingPage = () => {
+  const navigate = useNavigate();
 
-const LandingPage = () => (
-  <>
-    <div className="landing-container">
-      <motion.section
-        className="hero-section"
-        variants={sectionVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
-        tabIndex={0}
-        aria-label="Hero Section"
-      >
-        <h2 className="hero-title">Effortless Invoicing for Businesses & Freelancers</h2>
-        <Link to="/signup" className="cta-button">
-          Start Your Free Trial
-        </Link>
-      </motion.section>
+  return (
+    <div className="lp2-container">
+      {/* Hero Section */}
+      <section className="lp2-hero">
+        <div className="lp2-hero-fade"></div>
+        <div className="lp2-hero-container">
+          <div className="lp2-hero-content">
+            <motion.h1
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              Smartbill is a Smart and Simple Way to Manage Your Invoices and jobs
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="lp2-hero-subtitle"
+            >
+              One of the most important part of your business is getting paid. 
+              SmartBill streamlines your invoicing process alongside your jobs to help you create and overview your finances.
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="lp2-cta"
+            >
+              <button 
+                className="lp2-cta-button"
+                onClick={() => navigate('/register')}
+              >
+                Get Started
+              </button>
+            </motion.div>
+          </div>
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="lp2-hero-image"
+          >
+          <div className="lp2-phone-mockup">
+            <div className="lp2-phone-screen">
+              <div className="lp2-app-ui">
+                <div className="lp2-ui-header">
+                  <div className="lp2-ui-title">SmartBill</div>
+                  <div className="lp2-ui-icon">📊</div>
+                </div>
+                <div className="lp2-ui-content">
+                  <div className="lp2-ui-item active">Create Invoice</div>
+                  <div className="lp2-ui-item">Track Payments</div>
+                  <div className="lp2-ui-item">Manage Clients</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* Floating decorative elements */}
+          <div className="lp2-float-element lp2-float-1">💰</div>
+          <div className="lp2-float-element lp2-float-2">📄</div>
+          <div className="lp2-float-element lp2-float-3">✓</div>
+        </motion.div>
+        </div>
+      </section>
 
-      <motion.section
-        className="features-section"
-        variants={sectionVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
-        tabIndex={0}
-        aria-label="Features Section"
-      >
-        <h2>Why SmartBill?</h2>
-        {/* Write your compelling text here */}
-        <p className="features-description">
-          {/* Your description about why SmartBill is perfect for your business */}
-        </p>
-        {/* Optional image below description */}
-        <img
-          src="https://res.cloudinary.com/dhpjnh2q0/image/upload/v1752054419/2760426_kl1dgz.jpg"
-          alt="Why SmartBill Overview"
-          className="features-image"
-        />
-        {/* Bullet list of benefits */}
-        <motion.ul className="features-list" variants={listVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
-          {["Get paid on time with reminders", "Organize jobs & track time and money", "Easily search for projects", "Sign up with Google", "Professional invoices", "Save time"].map(text => (
-            <motion.li key={text} variants={itemVariants}>
-              {text}
-            </motion.li>
-          ))}
-        </motion.ul>
-      </motion.section>
+      {/* Features Section */}
+      <section className="lp2-features">
+        <div className="lp2-features-grid">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="lp2-feature"
+          >
+            <div className="lp2-feature-icon">👥</div>
+            <h3>Easy Client Management</h3>
+            <p>Keep track of all your clients and their payment history in one organized place.</p>
+          </motion.div>
+          
+          
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="lp2-feature"
+          >
+            <div className="lp2-feature-icon">✨</div>
+            <h3>Professional Templates</h3>
+            <p>Beautiful, customizable invoice templates that make your business look professional.</p>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="lp2-feature"
+          >
+            <div className="lp2-feature-icon">🎯</div>
+            <h3>Smart Analytics</h3>
+            <p>Gain insights into your business performance with detailed reports and analytics.</p>
+          </motion.div>
+        </div>
+      </section>
 
-      {/* Promo Section with image and benefits list */}
-      <motion.section
-        className="promo-section"
-        variants={sectionVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
-        tabIndex={0}
-        aria-label="Promo Section"
-      >
-        <h2 className="promo-text">Jobs & Invoice Dashboard</h2>
-        <img
-          src="https://res.cloudinary.com/dhpjnh2q0/image/upload/v1752054119/b808ea7dedf_uzmqlk.png"
-          alt="Invoice Dashboard Overview"
-          className="promo-image"
-        />
-        <motion.ul className="promo-list" variants={listVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
-          {["Mark jobs with paid status", "Search for jobs and see linked invoices", "Customize invoice templates to match your brand identity", "Automate reminders to clients and reduce late payments", "And much more to boost your productivity"].map(text => (
-            <motion.li key={text} variants={itemVariants}>
-              {text}
-            </motion.li>
-          ))}
-        </motion.ul>
-      </motion.section>
-
-      <motion.section
-        className="how-it-works-section"
-        variants={sectionVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
-        tabIndex={0}
-        aria-label="How It Works Section"
-      >
-        <h2>How It Works</h2>
-        <motion.ol
-          className="how-it-works-list"
-          variants={listVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
+      {/* CTA Section */}
+      <section className="lp2-cta-section">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6 }}
+          className="lp2-cta-content"
         >
-          {["Sign up instantly—no credit card needed.", "Enter your details and choose payment options.", "Send your invoice in no time."].map(text => (
-            <motion.li key={text} variants={itemVariants}>
-              {text}
-            </motion.li>
-          ))}
-        </motion.ol>
-      </motion.section>
-      <motion.section
-        className="cta-section"
-        variants={sectionVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
-        tabIndex={0}
-        aria-label="Call to Action Section"
-      >
-        <Link to="/login" className="GSN-button">
-          Get Started Now
-        </Link>
-      </motion.section>
+          <h2>Ready to streamline your invoicing?</h2>
+          <button 
+            className="lp2-cta-button"
+            onClick={() => navigate('/register')}
+          >
+            Start Your Free Trial
+          </button>
+        </motion.div>
+      </section>
     </div>
-  </>
-);
+  );
+};
 
 export default LandingPage;
