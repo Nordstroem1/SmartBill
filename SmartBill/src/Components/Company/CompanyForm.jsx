@@ -84,7 +84,6 @@ const CompanyForm = ({ onSubmit }) => {
       website,
       isVatRegistered,
       vatNumber: isVatRegistered ? vatNumber : "",
-      // Include appropriate banking info
       ...(country === "SE" ? { bankgiro, plusgiro } : { iban, swift }),
       paymentTerms,
       currency,

@@ -49,9 +49,21 @@ const Login = () => {
         
         // Update auth context with user data
         login(userData);
-        
-        // Redirect to dashboard after successful login
-        navigate('/dashboard');
+
+        // Helper checks: role may be string or numeric (BusinessOwner = 0)
+        const isBusinessOwner = (val) => {
+          if (val === null || val === undefined) return false;
+          const v = typeof val === 'string' ? val.toLowerCase() : val;
+          return v === 'businessowner' || v === 0 || v === '0';
+        };
+        const hasCompany = (u) => !!(u?.companyId || (u?.company && u.company.id));
+
+        // Redirect based on role and company presence
+        if (isBusinessOwner(userData.role) && !hasCompany(userData)) {
+          navigate('/company');
+        } else {
+          navigate('/dashboard');
+        }
         
         return userData;
       } else {

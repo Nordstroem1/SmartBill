@@ -5,6 +5,12 @@
 let isRefreshing = false;
 let failedQueue = [];
 
+// Single-flight and short-lived cache for /api/User/Me
+let getCurrentUserInFlight = null; // Promise | null
+let cachedCurrentUser = null; // object | null
+let cachedCurrentUserAt = 0; // timestamp ms
+const CURRENT_USER_CACHE_TTL_MS = 2000; // 2s is enough to survive StrictMode double-invoke
+
 const processQueue = (error, token = null) => {
   failedQueue.forEach(prom => {
     if (error) {
@@ -125,6 +131,11 @@ const apiClient = {
     
     // Clear any auth-related session storage
     sessionStorage.removeItem('google_code_verifier');
+
+  // Reset cached current user and in-flight promise
+  cachedCurrentUser = null;
+  cachedCurrentUserAt = 0;
+  getCurrentUserInFlight = null;
     
     // Redirect to login page
     window.location.href = '/login';
@@ -146,26 +157,45 @@ const apiClient = {
    */
   async getCurrentUser() {
     try {
-      // Get auth token from localStorage as fallback
+      const now = Date.now();
+      // Serve from short-lived cache to avoid immediate duplicate calls (StrictMode/dev remounts)
+      if (cachedCurrentUser && now - cachedCurrentUserAt < CURRENT_USER_CACHE_TTL_MS) {
+        return cachedCurrentUser;
+      }
+
+      // Return in-flight request if one exists
+      if (getCurrentUserInFlight) {
+        return await getCurrentUserInFlight;
+      }
+
+      // Prepare headers (support cookie or bearer)
       const authToken = localStorage.getItem('SmartBill_auth_token');
-      
       const options = {};
       if (authToken) {
-        options.headers = {
-          'Authorization': `Bearer ${authToken}`
-        };
+        options.headers = { 'Authorization': `Bearer ${authToken}` };
       }
-      
-      const response = await this.request('https://localhost:7094/api/User/Me', options);
-      
-      if (response.ok) {
-        return await response.json();
-      } else {
-        throw new Error('Failed to get current user');
-      }
+
+      // Start single-flight request
+      getCurrentUserInFlight = (async () => {
+        const response = await this.request('https://localhost:7094/api/User/Me', options);
+        if (!response.ok) {
+          throw new Error('Failed to get current user');
+        }
+        const data = await response.json();
+        // Update cache
+        cachedCurrentUser = data;
+        cachedCurrentUserAt = Date.now();
+        return data;
+      })();
+
+      const result = await getCurrentUserInFlight;
+      return result;
     } catch (error) {
       console.error('Error getting current user:', error);
       throw error;
+    } finally {
+      // Clear in-flight after resolution/rejection so future calls can refetch after TTL
+      getCurrentUserInFlight = null;
     }
   },
 

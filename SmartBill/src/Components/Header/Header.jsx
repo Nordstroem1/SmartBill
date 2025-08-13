@@ -29,6 +29,22 @@ const Header = () => {
         setIsMenuOpen(false); // Close menu after navigation
     };
 
+    // Format full name so each part starts with an uppercase letter (handles hyphens/apostrophes)
+    const formatName = (fullName) => {
+        if (!fullName || typeof fullName !== 'string') return '';
+        return fullName
+            .trim()
+            .split(/\s+/)
+            .map((part) =>
+                part
+                    // split but keep delimiters to properly rejoin hyphenated or apostrophe names
+                    .split(/([-'])/)
+                    .map((seg) => (/^[-']$/.test(seg) ? seg : seg ? seg.charAt(0).toUpperCase() + seg.slice(1).toLowerCase() : ''))
+                    .join('')
+            )
+            .join(' ');
+    };
+
     return (
         <header className="header">
             <motion.div 
@@ -135,8 +151,7 @@ const Header = () => {
                                     <>
                                         {user && (
                                             <div className="user-info">
-                                                <p>Welcome, {user.name || user.email}</p>
-                                                <p className="user-role">{user.role}</p>
+                                                <p>{formatName(user?.fullName)}</p>
                                             </div>
                                         )}
                                         <button 

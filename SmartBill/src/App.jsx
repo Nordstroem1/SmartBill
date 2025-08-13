@@ -8,10 +8,9 @@ import Login from './Components/Login/Login'
 import CompanyForm from './Components/Company/CompanyForm'
 import LandingPage from './Components/LandingPage/LandingPage'
 import ProtectedRoute from './Components/ProtectedRoute/ProtectedRoute'
-import Register from './Components/Register/Register'
-import PricingSelection from './Components/PricingSelection/PricingSelection'
 import SubscriptionComplete from './Components/SubscriptionComplete/SubscriptionComplete'
 import SubscriptionSuccess from './Components/SubscriptionSuccess/SubscriptionSuccess'
+import Register from './Components/Register/Register'
 
 function App() {
 
@@ -25,14 +24,6 @@ function App() {
               <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route 
-                path="/pricing-selection" 
-                element={
-                  <ProtectedRoute>
-                    <PricingSelection />
-                  </ProtectedRoute>
-                } 
-              />
               <Route 
                 path="/subscription/complete" 
                 element={

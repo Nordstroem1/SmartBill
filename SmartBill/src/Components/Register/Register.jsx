@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useGoogleAuth } from '../../hooks/useGoogleAuth';
 import { useAuth } from '../../hooks/useAuth.jsx';
 import RoleSelection from '../RoleSelection/RoleSelection';
+import SubscriptionModal from '../SubscriptionModal/SubscriptionModal';
 import "./Register.css";
 
 const Register = () => {
@@ -10,16 +11,16 @@ const Register = () => {
   const navigate = useNavigate();
   const [backendError, setBackendError] = useState(null);
   const [showRoleSelection, setShowRoleSelection] = useState(false);
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const [userData, setUserData] = useState(null);
   const { initiateGoogleAuth, isLoading, error } = useGoogleAuth();
-  const { login } = useAuth(); // Add useAuth hook
+  const { login, user, isLoading: authLoading } = useAuth(); 
   const hasProcessedCode = useRef(false);
 
   const sendGoogleCodeToAPI = async (GoogleCode) => {
     setBackendError(null);
     
     try {
-      // Get the PKCE code verifier from sessionStorage
       const codeVerifier = sessionStorage.getItem('google_code_verifier');
       
       const requestBody = {
@@ -48,10 +49,8 @@ const Register = () => {
           localStorage.setItem('SmartBill_auth_RefreshToken', userData.refreshToken);
         }
         
-        // Update auth context with user data
         login(userData);
         
-        // Always show role selection for new users
         setUserData(userData);
         setShowRoleSelection(true);
         
@@ -67,7 +66,6 @@ const Register = () => {
             try {
               const errorData = JSON.parse(responseText);
               
-              // Check for different possible error message fields
               errorMessage = errorData.message || 
                            errorData.error || 
                            errorData.title || 
@@ -118,7 +116,6 @@ const Register = () => {
       const authFlowType = sessionStorage.getItem('auth_flow_type');
       
       if (authFlowType === 'register') {
-        console.log('Processing OAuth code for registration:', code);
         
         sendGoogleCodeToAPI(code)
           .then((userData) => {
@@ -140,6 +137,39 @@ const Register = () => {
     }
   }, [searchParams, navigate]);
 
+  // If user refreshes while on /register and is already authenticated, decide next step
+  useEffect(() => {
+    if (authLoading) return;
+    if (!user) return;
+  if (showSubscriptionModal) return;
+
+    const isBusinessOwner = (val) => {
+      if (val === null || val === undefined) return false;
+      const v = typeof val === 'string' ? val.toLowerCase() : val;
+      // support backend enum numbers and strings
+      return v === 'businessowner' || v === 0 || v === '0';
+    };
+
+    // If role not chosen yet, show RoleSelection again
+    if (user.role === null || user.role === undefined) {
+      setShowRoleSelection(true);
+      return;
+    }
+
+    if (isBusinessOwner(user.role)) {
+      const hasCompany = !!(user.companyId || (user.company && user.company.id));
+      if (!hasCompany) {
+        setShowSubscriptionModal(true);
+      } else {
+        navigate('/dashboard');
+      }
+      return;
+    }
+
+    // Non-owners go to dashboard
+    navigate('/dashboard');
+  }, [user, authLoading, showSubscriptionModal, navigate]);
+
   const handleGoogleRegister = () => {
     setBackendError(null);
     
@@ -151,10 +181,8 @@ const Register = () => {
 
   const redirectBasedOnRole = (role) => {
     if (role === 'BusinessOwner') {
-      // Business Owners go to pricing selection
-      navigate('/pricing-selection');
+      setShowSubscriptionModal(true);
     } else {
-      // Employees go directly to dashboard
       navigate('/dashboard');
     }
   };
@@ -251,6 +279,13 @@ const Register = () => {
           onRoleSelect={handleRoleSelection}
           userData={userData}
         />
+      )}
+
+      {showSubscriptionModal && (
+        <SubscriptionModal onClose={() => {
+          setShowSubscriptionModal(false);
+          navigate('/dashboard');
+        }} />
       )}
     </div>
   );

@@ -23,7 +23,7 @@
 
 .pricing-header h2 {
   font-size: 2.5rem;
-  color: #2d3748;
+  color: #345691;
   margin-bottom: 10px;
   font-weight: 700;
 }
@@ -44,7 +44,7 @@
 
 .currency-selector label {
   font-weight: 600;
-  color: #4a5568;
+  color: #465f8a;
 }
 
 .currency-dropdown {
@@ -85,7 +85,7 @@
 }
 
 .pricing-plan.featured {
-  border-color: #667eea;
+  border-color: #2f4fdf;
   transform: scale(1.05);
   box-shadow: 0 15px 40px rgba(102, 126, 234, 0.15);
 }
@@ -95,7 +95,7 @@
   top: -12px;
   left: 50%;
   transform: translateX(-50%);
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #6475c4, #0d00fa);
   color: white;
   padding: 6px 20px;
   border-radius: 20px;
@@ -180,7 +180,7 @@
 }
 
 .pro-button {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #4157b9, #0418f0);
   color: white;
 }
 
