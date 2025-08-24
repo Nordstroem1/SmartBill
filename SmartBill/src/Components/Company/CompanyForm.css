@@ -123,6 +123,94 @@
   font-family: 'Open Sans', sans-serif;
 }
 
+/* Title row with info button */
+.company-form-container .title-with-info {
+  display: flex;
+  flex-direction: column; /* stack title and button */
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  margin-bottom: calc(var(--spacing-lg, 2rem) + 0.25rem); /* slightly tighter spacing below info button */
+}
+
+.company-form-container .title-with-info .create-company-title {
+  margin: 0 0 0.5rem 0; /* space above the button */
+}
+
+.company-form-container .info-button-wrap {
+  position: relative; /* anchor for centered popover */
+  margin-top: 0.125rem;
+}
+
+.company-form-container .info-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem; /* larger touch target */
+  min-height: 2.5rem;
+  padding: 0.35rem;
+  border-radius: 0.75rem; /* modern rounded */
+  border: 1px solid #c7d2fe; /* indigo-200 */
+  color: #1e40af; /* indigo-800 */
+  background: linear-gradient(180deg, #eef2ff, #e0e7ff); /* subtle indigo tint */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  line-height: 1;
+  cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease, transform 120ms ease, box-shadow 160ms ease, color 160ms ease;
+}
+
+.company-form-container .info-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.company-form-container .info-button:hover {
+  background: linear-gradient(180deg, #e0e7ff, #c7d2fe);
+  border-color: #a5b4fc; /* indigo-300 */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transform: scale(1.02);
+}
+
+.company-form-container .info-button:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.company-form-container .info-button:active {
+  transform: scale(0.98);
+}
+
+.company-form-container .info-popover {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 0.5rem);
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(26rem, 90vw);
+  padding: 1rem 1.25rem; /* extra inner padding for the text div */
+  border-radius: 0.75rem;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #111827;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+  text-align: left;
+  line-height: 1.45;
+  font-size: 0.95rem;
+}
+
+.company-form-container .info-popover::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  background: #ffffff;
+  border-left: 1px solid #e5e7eb;
+  border-top: 1px solid #e5e7eb;
+  transform: translateX(-50%) rotate(45deg);
+}
+
 /* Logo Upload Button Label - Separate from main title */
 .company-form-container .logo-upload-label {
   font-size: 0.875rem; /* Standard label size */
@@ -149,7 +237,7 @@
   align-items: center;
   justify-content: center;
   padding: 0.75rem 1.25rem; /* Increased padding for larger button */
-  background: linear-gradient(135deg, #1134d1 0%, #01652e 100%);
+  background: #0731bb;
   color: white !important; /* Force white text with higher specificity */
   border: none;
   border-radius: var(--border-radius, 0.5rem);
@@ -170,14 +258,14 @@
 
 /* Focus state */
 .company-form-container .logo-upload .file-text:focus {
-  background: linear-gradient(135deg, #1134d1 0%, #01652e 100%);
+  background: #0731bb; 
   outline: 3px solid rgba(17, 52, 209, 0.5);
   outline-offset: 2px;
 }
 
 /* Hover state - modern gradient shift */
 .company-form-container .logo-upload .file-text:hover {
-  background: linear-gradient(135deg, #1134d1 0%, #01652e 100%);
+  background: #0731bb;
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
 }
@@ -268,7 +356,7 @@
   align-items: center;
   cursor: pointer;
   font-weight: 600;
-  color: #1f2937;
+  color: #0731bb;
   font-size: 0.875rem;
   text-transform: none;
   letter-spacing: normal;
@@ -319,7 +407,7 @@
 }
 
 .company-form-container .form-group select:focus {
-  border-color: #1e40af;
+  border-color: #0731bb;
   box-shadow: 0 0 0 4px rgba(30, 64, 175, 0.25);
   background-color: #fefefe;
 }

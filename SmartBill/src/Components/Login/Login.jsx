@@ -90,16 +90,13 @@ const Login = () => {
           }
           
         } catch (readError) {
-          console.error('Could not read response:', readError);
           errorMessage = `HTTP ${response.status}: Could not read error response`;
         }
         
-        console.error('Final error message to display:', errorMessage);
         setBackendError(errorMessage);
         throw new Error(errorMessage);
       }
     } catch (error) {
-      console.error('Error sending Google code to API:', error);
       setBackendError(error.message);
       throw error;
     }
@@ -112,8 +109,7 @@ const Login = () => {
     const errorParam = searchParams.get('error');
 
     if (errorParam) {
-      console.error('OAuth error:', errorParam);
-      return;
+  return;
     }
 
     if (code && state && !hasProcessedCode.current) {
@@ -127,12 +123,10 @@ const Login = () => {
         sendGoogleCodeToAPI(code)
           .then((userData) => {
             // Login successful, redirect to dashboard
-            console.log('Authentication successful:', userData);
             // Clean up the flow type
             sessionStorage.removeItem('auth_flow_type');
           })
           .catch((err) => {
-            console.error('Authentication failed:', err);
             sessionStorage.removeItem('auth_flow_type');
             hasProcessedCode.current = false; // Reset on error to allow retry
           });
@@ -151,7 +145,6 @@ const Login = () => {
       
       await initiateGoogleAuth();
     } catch (err) {
-      console.error("Google login failed:", err);
     }
   };
 

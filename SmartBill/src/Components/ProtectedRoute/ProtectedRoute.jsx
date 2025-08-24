@@ -1,16 +1,14 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth.jsx';
-
-/**
- * Protected Route component that requires authentication
- * Redirects to login if user is not authenticated
- */
-const ProtectedRoute = ({ children, redirectTo = '/login' }) => {
-  const { isAuthenticated, isLoading } = useAuth();
-  const location = useLocation();
-
-  // Show loading spinner while checking auth status
+ /**
+  * Protected Route component that requires authentication
+  * Redirects to login if user is not authenticated
+  */
+ const ProtectedRoute = ({ children, redirectTo = '/login' }) => {
+   const { isAuthenticated, isLoading } = useAuth();
+   const location = useLocation();
+   // Show loading spinner while checking auth status
   if (isLoading) {
     return (
       <div className="auth-loading">

@@ -200,6 +200,30 @@
   margin-bottom: 2rem;
 }
 
+/* Toolbar for analytics toggle */
+.dashboard-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 0 1rem 0;
+}
+.analytics-toggle {
+  background: #111827;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.5rem 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease, opacity 0.2s ease;
+}
+.analytics-toggle:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(17,24,39,0.18);
+}
+.analytics-toggle.active {
+  opacity: 0.9;
+}
+
 .search-input {
   width: 100%;
   max-width: 400px;
@@ -242,6 +266,7 @@
   max-width: 800px;
   margin: 0 auto;
   padding: 1rem 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 .month-btn {
   background: #ffffff;
@@ -266,6 +291,12 @@
   text-transform: capitalize;
   letter-spacing: 0.025em;
   backdrop-filter: blur(10px);
+}
+
+/* Active month state */
+.month-btn.is-active {
+  border-color: #1d4ed8;
+  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.15), 0 8px 20px rgba(29,78,216,0.15);
 }
 
 .month-btn::before {
@@ -328,6 +359,145 @@
   box-shadow: 
     0 4px 6px -1px rgba(59, 130, 246, 0.2),
     0 2px 4px -1px rgba(59, 130, 246, 0.06);
+}
+
+/* Month counts badge */
+.month-badge {
+  margin-left: 0.5rem;
+  background: #eef2ff;
+  color: #1d4ed8;
+  border: 1px solid rgba(29, 78, 216, 0.2);
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.month-badge.is-zero {
+  background: #f3f4f6; /* gray-100 */
+  color: #6b7280; /* gray-500 */
+  border-color: #e5e7eb; /* gray-200 */
+}
+.month-badge.is-some {
+  background: #ecfdf5; /* emerald-50 */
+  color: #047857; /* emerald-700 */
+  border-color: #a7f3d0; /* emerald-200 */
+}
+
+/* Jobs list */
+.jobs-list {
+  margin-top: 2rem;
+  text-align: left;
+}
+.jobs-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+.jobs-list-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+}
+.jobs-count {
+  color: #6b7280;
+  font-weight: 600;
+}
+.jobs-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+.job-item {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 0.9rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.job-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  color: #1f2937;
+}
+.job-date {
+  font-variant-numeric: tabular-nums;
+  color: #6b7280;
+}
+.job-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #9ca3af;
+}
+.job-title {
+  font-weight: 600;
+}
+.job-open-btn,
+.create-inline-btn {
+  background: #111827;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.55rem 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+.job-open-btn:hover,
+.create-inline-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(17,24,39,0.18);
+}
+.create-inline-btn {
+  margin-top: 0.75rem;
+}
+
+.empty-state {
+  background: #f9fafb;
+  border: 1px dashed #e5e7eb;
+  border-radius: 12px;
+  padding: 1rem;
+  color: #6b7280;
+}
+
+/* Pagination */
+.pagination {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+.page-btn {
+  background: #111827;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.5rem 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+.page-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(17,24,39,0.18);
+}
+.page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.page-status {
+  color: #6b7280;
+  font-weight: 600;
 }
 
 /* Loading State */
