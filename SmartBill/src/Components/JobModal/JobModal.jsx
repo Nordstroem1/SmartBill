@@ -9,6 +9,7 @@ function JobModal({ isOpen, onClose, selectedMonth, selectedYear }) {
   const [editingJob, setEditingJob] = useState(null);
   const [editedJobData, setEditedJobData] = useState({});
   const [uploadingInvoice, setUploadingInvoice] = useState(null);
+  const [statusMenuOpen, setStatusMenuOpen] = useState(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -103,6 +104,7 @@ function JobModal({ isOpen, onClose, selectedMonth, selectedYear }) {
   const totalAmount = filteredJobs.reduce((sum, job) => sum + job.amount, 0);
 
   const handleEditJob = (job) => {
+  setStatusMenuOpen(null);
     setEditingJob(job.id);
     setEditedJobData({ ...job });
   };
@@ -133,6 +135,35 @@ function JobModal({ isOpen, onClose, selectedMonth, selectedYear }) {
       window.open(job.invoiceUrl, '_blank');
     }
   };
+
+  const toggleStatusMenu = (e, jobId) => {
+    e.stopPropagation();
+    setEditingJob(null);
+    setStatusMenuOpen(prev => (prev === jobId ? null : jobId));
+  };
+
+  const updateJobStatus = (jobId, status) => {
+    setJobs(prev => prev.map(j => (j.id === jobId ? { ...j, status } : j)));
+    setStatusMenuOpen(null);
+  };
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') setStatusMenuOpen(null);
+    };
+    const onClick = (e) => {
+      // Close if clicking outside the dropdown area
+      const inDropdown = e.target.closest?.('.status-dropdown');
+      if (inDropdown) return;
+      setStatusMenuOpen(null);
+    };
+    document.addEventListener('keydown', onKey);
+    document.addEventListener('click', onClick);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.removeEventListener('click', onClick);
+    };
+  }, []);
 
   const handleGenerateInvoice = (job) => {
     // Simulate invoice generation - replace with actual implementation
@@ -280,26 +311,52 @@ function JobModal({ isOpen, onClose, selectedMonth, selectedYear }) {
                           )}
                           {editingJob === job.id ? (
                             <select
-                              value={editedJobData.status || ''}
+                              value={editedJobData.status ?? job.status}
                               onChange={(e) => handleInputChange('status', e.target.value)}
                               className="edit-select status-select"
                               style={{ 
-                                backgroundColor: getStatusColor(editedJobData.status || job.status),
+                                backgroundColor: getStatusColor(editedJobData.status ?? job.status),
                                 color: 'white'
                               }}
+                              onClick={(e) => e.stopPropagation()}
                             >
                               <option value="waiting">Väntar</option>
                               <option value="sent">Skickad</option>
                               <option value="paid">Betald</option>
                             </select>
                           ) : (
-                            <span 
-                              className="job-status"
-                              style={{ backgroundColor: getStatusColor(job.status) }}
-                              onClick={() => handleEditJob(job)}
-                            >
-                              {getStatusText(job.status)}
-                            </span>
+                            <div className="status-dropdown" onClick={(e) => e.stopPropagation()}>
+                              <button 
+                                type="button"
+                                className="job-status status-trigger"
+                                style={{ backgroundColor: getStatusColor(job.status) }}
+                                aria-haspopup="listbox"
+                                aria-expanded={statusMenuOpen === job.id}
+                                onClick={(e) => toggleStatusMenu(e, job.id)}
+                              >
+                                {getStatusText(job.status)}
+                                <span className="caret" aria-hidden>▾</span>
+                              </button>
+                              {statusMenuOpen === job.id && (
+                                <ul className="status-menu" role="listbox" aria-label="Ändra status">
+                                  <li role="option" aria-selected={job.status==='waiting'}>
+                                    <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); updateJobStatus(job.id, 'waiting'); }}>
+                                      Väntar
+                                    </button>
+                                  </li>
+                                  <li role="option" aria-selected={job.status==='sent'}>
+                                    <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); updateJobStatus(job.id, 'sent'); }}>
+                                      Skickad
+                                    </button>
+                                  </li>
+                                  <li role="option" aria-selected={job.status==='paid'}>
+                                    <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); updateJobStatus(job.id, 'paid'); }}>
+                                      Betald
+                                    </button>
+                                  </li>
+                                </ul>
+                              )}
+                            </div>
                           )}
                         </div>
                         <div className="job-card-details">

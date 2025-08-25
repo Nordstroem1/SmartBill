@@ -76,10 +76,10 @@ function Dashboard() {
     setSelectedYear(parseInt(event.target.value));
   };
 
-  // Reset pagination when filters change
+  // Reset pagination when year or search changes (not on month selection)
   useEffect(() => {
     setPage(1);
-  }, [selectedMonth, selectedYear, query]);
+  }, [selectedYear, query]);
 
   // Generate year options (from 2025 onwards, up to current year + 5)
   const currentYear = new Date().getFullYear();
@@ -105,19 +105,16 @@ function Dashboard() {
     return counts;
   }, [jobsData, selectedYear]);
 
-  // Filtered jobs by year, month selection, and search query
+  // Filtered jobs by year and search query (full year list)
   const filteredJobs = useMemo(() => {
     const inYear = jobsData.filter(j => new Date(j.date).getFullYear() === selectedYear);
-    const byScope = selectedMonth
-      ? inYear.filter(j => new Date(j.date).toLocaleString('en-US', { month: 'long' }).toLowerCase() === selectedMonth.toLowerCase())
-      : inYear;
     const q = query.trim().toLowerCase();
-    if (!q) return byScope.sort((a,b)=> new Date(b.date) - new Date(a.date));
-    return byScope.filter(j =>
+    if (!q) return inYear.sort((a,b)=> new Date(b.date) - new Date(a.date));
+    return inYear.filter(j =>
       j.title?.toLowerCase().includes(q) ||
       new Date(j.date).toLocaleDateString('en-GB').includes(q)
     ).sort((a,b)=> new Date(b.date) - new Date(a.date));
-  }, [jobsData, selectedYear, selectedMonth, query]);
+  }, [jobsData, selectedYear, query]);
 
   const totalPages = Math.max(1, Math.ceil(filteredJobs.length / pageSize));
   const paginatedJobs = useMemo(() => {
@@ -294,7 +291,7 @@ function Dashboard() {
           >
             <div className="jobs-list-header">
               <h3>
-                {selectedMonth} {selectedYear}
+                All jobs in {selectedYear}
               </h3>
               <span className="jobs-count">{filteredJobs.length} jobs</span>
             </div>

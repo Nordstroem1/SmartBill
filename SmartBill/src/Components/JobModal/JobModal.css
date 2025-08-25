@@ -241,7 +241,7 @@
     0 2px 4px -1px rgba(0, 0, 0, 0.06),
     0 8px 25px -5px rgba(0, 0, 0, 0.12);
   position: relative;
-  overflow: hidden;
+  overflow: visible; /* allow dropdowns to escape */
   /* make cursor indicate clickability */
   cursor: pointer;
 }
@@ -276,6 +276,7 @@
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 1rem;
+  overflow: visible;
 }
 
 .job-card-header h3 {
@@ -297,11 +298,87 @@
   margin-left: 1rem;
   cursor: pointer;
   transition: all 0.2s ease;
+  /* Remove default button borders/outlines on mobile */
+  border: none;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  box-shadow: none;
+}
+.job-status:focus,
+.job-status:focus-visible {
+  outline: none;
+  box-shadow: none;
 }
 
 .job-status:hover {
   transform: scale(1.05);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Status dropdown */
+.status-dropdown {
+  position: relative;
+}
+.status-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: none;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: none;
+}
+.status-trigger:focus,
+.status-trigger:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+.status-trigger .caret {
+  display: inline-block;
+  font-size: 0.8em;
+  opacity: 0.9;
+}
+.status-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+  border-radius: 10px;
+  padding: 0.3rem;
+  min-width: 160px;
+  z-index: 1001; /* above card shadows */
+}
+
+@media (max-width: 480px) {
+  .status-menu {
+    right: auto;
+    left: 0;
+    min-width: 140px;
+    max-width: 75vw;
+    overflow-x: hidden;
+  }
+}
+.status-menu li {
+  list-style: none;
+}
+.status-menu button {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+}
+.status-menu button:hover {
+  background: #f3f4f6;
 }
 
 .job-card-details {
@@ -713,7 +790,7 @@
     flex: 1;
     justify-content: center;
     min-width: 0;
-    font-size: 0.9rem;
+    font-size: 0.75rem;
     padding: 0.5rem 0.5rem;
   }
 }
