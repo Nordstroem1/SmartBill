@@ -24,6 +24,7 @@ function Dashboard() {
   const [showAnalytics, setShowAnalytics] = useState(false);
   const [page, setPage] = useState(1);
   const pageSize = 4;
+  const [company, setCompany] = useState(null);
 
   useEffect(() => {
     // Check if user is authenticated
@@ -35,6 +36,14 @@ function Dashboard() {
     // Get user data
     const userData = getStoredUser();
     setUser(userData);
+    // Mock company info for display at top (replace with API/user-bound data when available)
+    setTimeout(() => {
+      setCompany({
+        name: "SmartBill Studio AB",
+        logoUrl: "https://res.cloudinary.com/dhpjnh2q0/image/upload/v1756215727/PlaceholderLogo_kx7rce.png",
+        address: "123 Invoice St, Billing City"
+      });
+    }, 150);
   }, [navigate]);
 
   // Fetch job data to determine which months to display
@@ -144,6 +153,26 @@ function Dashboard() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
+        {company && (
+          <motion.header
+            className="dashboard-header"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            <div className="dashboard-user-info">
+              <img
+                src={company.logoUrl || ""}
+                alt={`${company.name} logo`}
+                className="user-avatar"
+              />
+              <div className="user-details">
+                <h2>{company.name}</h2>
+                <p>{company.address || "Unknown Address"}</p>
+              </div>
+            </div>
+          </motion.header>
+        )}
         {/* Toolbar to toggle analytics visibility */}
         <div className="dashboard-toolbar">
           <button

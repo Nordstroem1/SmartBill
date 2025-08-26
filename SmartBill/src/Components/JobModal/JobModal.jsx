@@ -20,12 +20,12 @@ function JobModal({ isOpen, onClose, selectedMonth, selectedYear }) {
         const mockJobs = [
           {
             id: 1,
-            title: "Webbdesign för företag",
+            title: "Website design for company",
             client: "Tech Solutions AB",
             date: "2025-01-15",
             amount: 25000,
             status: "paid",
-            description: "Komplett webbdesign och utveckling av företagshemsida",
+            description: "Complete website design and development for corporate site",
             hasInvoice: true,
             invoiceUrl: "/invoices/invoice-001.pdf"
           },
@@ -36,29 +36,29 @@ function JobModal({ isOpen, onClose, selectedMonth, selectedYear }) {
             date: "2025-01-22",
             amount: 8000,
             status: "sent",
-            description: "Skapande av logotyp och visuell identitet",
+            description: "Creation of logo and visual identity",
             hasInvoice: true,
             invoiceUrl: "/invoices/invoice-002.pdf"
           },
           {
             id: 3,
-            title: "E-handel lösning",
+            title: "E-commerce solution",
             client: "Fashion Store",
             date: "2025-01-10",
             amount: 45000,
             status: "waiting",
-            description: "Utveckling av e-handelsplattform med betalningslösningar",
+            description: "Development of an e-commerce platform with payment solutions",
             hasInvoice: false,
             invoiceUrl: null
           },
           {
             id: 4,
-            title: "Mobil app UI/UX",
+            title: "Mobile app UI/UX",
             client: "HealthTech",
             date: "2025-01-28",
             amount: 35000,
             status: "paid",
-            description: "Design av användargränssnitt för hälsoapp",
+            description: "Design of user interface for health app",
             hasInvoice: true,
             invoiceUrl: "/invoices/invoice-004.pdf"
           }
@@ -91,11 +91,11 @@ function JobModal({ isOpen, onClose, selectedMonth, selectedYear }) {
   const getStatusText = (status) => {
     switch (status) {
       case "paid":
-        return "Betald";
+        return "Paid";
       case "sent":
-        return "Skickad";
+        return "Sent";
       case "waiting":
-        return "Väntar";
+        return "Waiting";
       default:
         return status;
     }
@@ -167,7 +167,7 @@ function JobModal({ isOpen, onClose, selectedMonth, selectedYear }) {
 
   const handleGenerateInvoice = (job) => {
     // Simulate invoice generation - replace with actual implementation
-    console.log(`Generating invoice for job: ${job.title}`);
+  console.log(`Generating invoice for job: ${job.title}`);
     
     // Update job to have invoice after generation
     setJobs(jobs.map(j => 
@@ -177,17 +177,17 @@ function JobModal({ isOpen, onClose, selectedMonth, selectedYear }) {
     ));
     
     // Show success message or redirect to invoice generation page
-    alert(`Faktura genererad för "${job.title}"`);
+  alert(`Invoice generated for "${job.title}"`);
   };
 
   const handleRemoveInvoice = (job) => {
-    if (window.confirm(`Är du säker på att du vill ta bort fakturan för "${job.title}"?`)) {
+  if (window.confirm(`Are you sure you want to remove the invoice for "${job.title}"?`)) {
       setJobs(jobs.map(j => 
         j.id === job.id 
           ? { ...j, hasInvoice: false, invoiceUrl: null }
           : j
       ));
-      alert(`Faktura borttagen för "${job.title}"`);
+  alert(`Invoice removed for "${job.title}"`);
     }
   };
 
@@ -205,10 +205,10 @@ function JobModal({ isOpen, onClose, selectedMonth, selectedYear }) {
             : j
         ));
         setUploadingInvoice(null);
-        alert(`Ny faktura uppladdad för "${job.title}"`);
+  alert(`New invoice uploaded for "${job.title}"`);
       }, 1500);
     } else {
-      alert('Endast PDF-filer är tillåtna');
+  alert('Only PDF files are allowed');
     }
   };
 
@@ -245,11 +245,11 @@ function JobModal({ isOpen, onClose, selectedMonth, selectedYear }) {
           >
             <div className="job-modal-header">
               <div className="job-modal-title">
-                <h2>Jobb för {selectedMonth} {selectedYear}</h2>
+                <h2>Jobs for {selectedMonth} {selectedYear}</h2>
                 <div className="job-modal-summary">
-                  <span className="job-count">{filteredJobs.length} jobb</span>
+                  <span className="job-count">{filteredJobs.length} jobs</span>
                   <span className="total-amount">
-                    {totalAmount.toLocaleString('sv-SE')} kr
+                    {totalAmount.toLocaleString('en-SE')} SEK
                   </span>
                 </div>
               </div>
@@ -261,7 +261,7 @@ function JobModal({ isOpen, onClose, selectedMonth, selectedYear }) {
             <div className="job-modal-search">
               <input
                 type="text"
-                placeholder="Sök bland jobb..."
+                placeholder="Search jobs..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="job-search-input"
@@ -279,13 +279,13 @@ function JobModal({ isOpen, onClose, selectedMonth, selectedYear }) {
                 <div></div>
                 <div></div>
               </div>
-              <p>Laddar jobb...</p>
+              <p>Loading jobs...</p>
             </div>
               ) : (
                 <div className="job-list">
                   {filteredJobs.length === 0 ? (
                     <div className="no-jobs">
-                      <p>Inga jobb hittades för {selectedMonth} {selectedYear}</p>
+                      <p>No jobs found for {selectedMonth} {selectedYear}</p>
                     </div>
                   ) : (
                     filteredJobs.map((job, index) => (
@@ -293,6 +293,7 @@ function JobModal({ isOpen, onClose, selectedMonth, selectedYear }) {
                         onClick={() => handleEditJob(job)}
                         key={job.id}
                         className="job-card"
+                        data-status={editingJob === job.id ? (editedJobData.status ?? job.status) : job.status}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.1 }}
@@ -304,7 +305,7 @@ function JobModal({ isOpen, onClose, selectedMonth, selectedYear }) {
                               value={editedJobData.title || ''}
                               onChange={(e) => handleInputChange('title', e.target.value)}
                               className="edit-input title-input"
-                              placeholder="Jobbtitel"
+                              placeholder="Job title"
                             />
                           ) : (
                             <h3 onClick={() => handleEditJob(job)}>{job.title}</h3>
@@ -320,9 +321,9 @@ function JobModal({ isOpen, onClose, selectedMonth, selectedYear }) {
                               }}
                               onClick={(e) => e.stopPropagation()}
                             >
-                              <option value="waiting">Väntar</option>
-                              <option value="sent">Skickad</option>
-                              <option value="paid">Betald</option>
+                              <option value="waiting">Waiting</option>
+                              <option value="sent">Sent</option>
+                              <option value="paid">Paid</option>
                             </select>
                           ) : (
                             <div className="status-dropdown" onClick={(e) => e.stopPropagation()}>
@@ -338,20 +339,20 @@ function JobModal({ isOpen, onClose, selectedMonth, selectedYear }) {
                                 <span className="caret" aria-hidden>▾</span>
                               </button>
                               {statusMenuOpen === job.id && (
-                                <ul className="status-menu" role="listbox" aria-label="Ändra status">
+                                <ul className="status-menu" role="listbox" aria-label="Change status">
                                   <li role="option" aria-selected={job.status==='waiting'}>
                                     <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); updateJobStatus(job.id, 'waiting'); }}>
-                                      Väntar
+                                      Waiting
                                     </button>
                                   </li>
                                   <li role="option" aria-selected={job.status==='sent'}>
                                     <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); updateJobStatus(job.id, 'sent'); }}>
-                                      Skickad
+                                      Sent
                                     </button>
                                   </li>
                                   <li role="option" aria-selected={job.status==='paid'}>
                                     <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); updateJobStatus(job.id, 'paid'); }}>
-                                      Betald
+                                      Paid
                                     </button>
                                   </li>
                                 </ul>
@@ -367,7 +368,7 @@ function JobModal({ isOpen, onClose, selectedMonth, selectedYear }) {
                                 value={editedJobData.client || ''}
                                 onChange={(e) => handleInputChange('client', e.target.value)}
                                 className="edit-input"
-                                placeholder="Klient"
+                                placeholder="Client"
                               />
                               <input
                                 type="date"
@@ -380,14 +381,14 @@ function JobModal({ isOpen, onClose, selectedMonth, selectedYear }) {
                                 value={editedJobData.amount || ''}
                                 onChange={(e) => handleInputChange('amount', e.target.value)}
                                 className="edit-input amount-input"
-                                placeholder="Belopp"
+                                placeholder="Amount"
                               />
                             </>
                           ) : (
                             <>
                               <p className="job-client" onClick={() => handleEditJob(job)}>{job.client}</p>
-                              <p className="job-date" onClick={() => handleEditJob(job)}>{new Date(job.date).toLocaleDateString('sv-SE')}</p>
-                              <p className="job-amount" onClick={() => handleEditJob(job)}>{job.amount.toLocaleString('sv-SE')} kr</p>
+                              <p className="job-date" onClick={() => handleEditJob(job)}>{new Date(job.date).toLocaleDateString('en-GB')}</p>
+                              <p className="job-amount" onClick={() => handleEditJob(job)}>{job.amount.toLocaleString('en-GB')} SEK</p>
                             </>
                           )}
                         </div>
@@ -397,7 +398,7 @@ function JobModal({ isOpen, onClose, selectedMonth, selectedYear }) {
                               value={editedJobData.description || ''}
                               onChange={(e) => handleInputChange('description', e.target.value)}
                               className="edit-textarea"
-                              placeholder="Beskrivning"
+                              placeholder="Description"
                               rows="3"
                             />
                             {job.hasInvoice && (
@@ -406,14 +407,14 @@ function JobModal({ isOpen, onClose, selectedMonth, selectedYear }) {
                                   className="invoice-btn remove-invoice-btn"
                                   onClick={() => handleRemoveInvoice(job)}
                                 >
-                                   Ta bort
+                                   Remove
                                 </button>
                                 <button 
                                   className="invoice-btn update-invoice-btn"
                                   onClick={() => triggerFileUpload(job.id)}
                                   disabled={uploadingInvoice === job.id}
                                 >
-                                  {uploadingInvoice === job.id ? 'Laddar upp...' : 'Lägg till'}
+                                  {uploadingInvoice === job.id ? 'Uploading...' : 'Add'}
                                 </button>
                                 <input
                                   id={`file-input-${job.id}`}
@@ -429,13 +430,13 @@ function JobModal({ isOpen, onClose, selectedMonth, selectedYear }) {
                                 className="save-btn"
                                 onClick={() => handleSaveJob(job.id)}
                               >
-                                Spara
+                                Save
                               </button>
                               <button 
                                 className="cancel-btn"
                                 onClick={(e) => { e.stopPropagation(); handleCancelEdit(); }}
                               >
-                                Avbryt
+                                Cancel
                               </button>
                             </div>
                           </>
@@ -447,9 +448,9 @@ function JobModal({ isOpen, onClose, selectedMonth, selectedYear }) {
                                 <div className="invoice-actions">
                                   <button 
                                     className="invoice-btn view-invoice-btn"
-                                    onClick={() => handleViewInvoice(job)}
+                         onClick={() => handleViewInvoice(job)}
                                   >
-                                     Visa Faktura
+                           View Invoice
                                   </button>
                                   <input
                                     id={`file-input-${job.id}`}
@@ -463,16 +464,16 @@ function JobModal({ isOpen, onClose, selectedMonth, selectedYear }) {
                                 <div className="invoice-actions">
                                   <button 
                                     className="invoice-btn generate-invoice-btn"
-                                    onClick={() => handleGenerateInvoice(job)}
+                         onClick={() => handleGenerateInvoice(job)}
                                   >
-                                     Generera Faktura
+                           Generate Invoice
                                   </button>
                                   <button 
                                     className="invoice-btn upload-invoice-btn"
                                     onClick={() => triggerFileUpload(job.id)}
                                     disabled={uploadingInvoice === job.id}
                                   >
-                                    {uploadingInvoice === job.id ? 'Laddar upp...' : 'Ladda upp PDF'}
+                                      {uploadingInvoice === job.id ? 'Uploading...' : 'Upload PDF'}
                                   </button>
                                   <input
                                     id={`file-input-${job.id}`}

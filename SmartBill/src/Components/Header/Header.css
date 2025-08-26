@@ -4,7 +4,7 @@
   position: sticky;
   top: 0;
   z-index: 1000;
-  padding: 16px 16px 8px 16px;
+  padding: 12px 12px 6px 12px;
   background: transparent;
   justify-content: center;
   align-items: center;
@@ -16,7 +16,7 @@
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
   border-radius: 24px;
-  padding: 8px var(--spacing-sm);
+  padding: 6px var(--spacing-sm);
   box-shadow: 0 10px 15px rgba(0, 0, 0, 0.08), 0 4px 6px rgba(0, 0, 0, 0.05);
   border: 1.5px solid rgba(0, 0, 0, 0.15);
   width: 100%;
@@ -36,30 +36,28 @@
 
 /* Left spacer for centering */
 .header-spacer {
-  width: 44px;
-  height: 44px;
-  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
 }
 
-/* Logo Section */
-.logo-section {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1;
+.brand-logo {
+  width: 40px;
+  height: 40px;
+  display: block;
+  object-fit: contain;
 }
 
 .logo-text {
   font-size: 20px;
   font-weight: 600;
-  color: black;
+  color: #111827;
   letter-spacing: -0.01em;
   margin: 0;
   white-space: nowrap;
   line-height: 1.2;
   cursor: pointer;
-  transition: transform 0.2s ease;
 }
 
 .logo-text:hover {
@@ -68,32 +66,22 @@
 
 /* Hamburger Button */
 .hamburger-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 12px;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 50px;
+  width: 40px;
   height: 50px;
-  transition: all 0.15s ease;
-  z-index: 2;
-  position: relative;
-  outline: none;
-  box-shadow: none;
-  -webkit-tap-highlight-color: transparent;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: #111827; /* icon inherits currentColor */
+  cursor: pointer;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-}
-
-.hamburger-icon {
-  color: rgba(0, 0, 0, 0.8);
-  width: 30px;
-  height: 30px;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+  border-radius: 8px;
 }
 
 .close-icon {
@@ -105,17 +93,21 @@
 /* Tablet screens */
 @media (min-width: 640px) {
   .header {
-    padding: 20px 24px 12px 24px;
+    padding: 16px 20px 10px 20px;
   }
   
   .header-bar {
-    padding: 12px 32px;
+    padding: 10px 28px;
     max-width: 1100px;
   }
   
   .header-spacer {
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
+  }
+  .brand-logo {
+  width: 40px;
+  height: 40px;
   }
   
   .logo-text {
@@ -123,9 +115,9 @@
   }
   
   .hamburger-btn {
-    width: 48px;
-    height: 48px;
-    padding: 16px;
+  width: 44px;
+  height: 54px;
+  padding: 0;
   }
   
   .hamburger-icon {
@@ -142,17 +134,21 @@
 /* Desktop screens */
 @media (min-width: 1024px) {
   .header {
-    padding: 24px 32px 16px 32px;
+    padding: 20px 28px 12px 28px;
   }
   
   .header-bar {
-    padding: 16px 48px;
+    padding: 12px 40px;
     max-width: 1200px;
   }
   
   .header-spacer {
-    width: 52px;
-    height: 52px;
+    width: 48px;
+    height: 48px;
+  }
+  .brand-logo {
+  width: 44px;
+  height: 44px;
   }
   
   .logo-text {
@@ -161,8 +157,8 @@
   }
   
   .hamburger-btn {
-    width: 52px;
-    height: 52px;
+  width: 48px;
+  height: 58px;
   }
   
   .hamburger-icon {
@@ -210,14 +206,19 @@
 /* Navigation Buttons */
 .nav-btn {
   width: 100%;
-  padding: 12px 16px;
+  padding: 14px 16px;
   border: none;
-  border-radius: 8px;
-  font-weight: 500;
+  border-radius: 14px;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s ease;
-  margin-bottom: 8px;
-  font-size: 14px;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease, filter 0.2s ease;
+  margin-bottom: 10px;
+  font-size: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.08);
 }
 
 .nav-btn:last-child {
@@ -226,51 +227,66 @@
 
 /* Dashboard Button */
 .dashboard-btn {
-  background: #3b82f6;
-  color: white;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: #fff;
 }
 
 .dashboard-btn:hover {
-  background: #2563eb;
+  filter: brightness(1.03);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(37,99,235,0.25);
 }
+.dashboard-btn:active { transform: translateY(0); }
 
 /* Logout Button */
 .logout-btn {
-  background: #dc2626;
-  color: white;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: #fff;
 }
 
 .logout-btn:hover {
-  background: #b91c1c;
+  filter: brightness(1.03);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(220,38,38,0.25);
 }
+.logout-btn:active { transform: translateY(0); }
 
 /* Login Button */
 .login-btn {
-  background: #10b981;
-  color: white;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #fff;
 }
 
 .login-btn:hover {
-  background: #059669;
+  filter: brightness(1.03);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(16,185,129,0.25);
 }
+.login-btn:active { transform: translateY(0); }
 
 /* Register Button */
 .register-btn {
-  background: #0f12ea;
-  color: white;
+  background: linear-gradient(135deg, #3b82f6 0%, #0f12ea 100%);
+  color: #fff;
 }
 
 .register-btn:hover {
-  background: #7c3aed;
+  filter: brightness(1.03);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(59,130,246,0.25);
 }
+.register-btn:active { transform: translateY(0); }
+
+.btn-icon { opacity: 0.95; }
+.nav-btn:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(59,130,246,0.3); }
 
 /* Desktop Navigation Buttons Override */
 @media (min-width: 1024px) {
   .nav-btn {
-    padding: 8px 12px !important;
-    font-size: 16px !important;
-    margin-bottom: 10px !important;
-    font-weight: 600 !important;
+  padding: 14px 16px !important;
+  font-size: 15px !important;
+  margin-bottom: 10px !important;
+  font-weight: 700 !important;
     max-width: 650px !important;
     margin-left: auto !important;
     margin-right: auto !important;

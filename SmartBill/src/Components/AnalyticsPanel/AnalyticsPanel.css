@@ -2,6 +2,66 @@
 .analytics {
   margin-bottom: 1.5rem;
 }
+.analytics-section-title {
+  margin: 0.75rem 0 0.5rem;
+  color: #374151;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+.donut-wrap {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 0.25rem 0.75rem;
+}
+.donut-wrap .recharts-wrapper {
+  /* Ensure crisp rendering */
+  overflow: visible;
+}
+.donut {
+  transform: rotate(-90deg);
+}
+.donut-ring {
+  stroke: #f3f4f6;
+}
+.donut-empty {
+  stroke: #e5e7eb;
+}
+.donut-segment.paid {
+  stroke: #10b981; /* green */
+}
+.donut-segment.sent {
+  stroke: #3b82f6; /* blue */
+}
+.donut-segment.waiting {
+  stroke: #f59e0b; /* amber */
+}
+.donut-center {
+  font-size: 10px;
+  font-weight: 800;
+  fill: #111827;
+  transform: rotate(90deg);
+}
+.donut-legend {
+  display: grid;
+  gap: 0.35rem;
+}
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #4b5563;
+  font-size: 0.9rem;
+}
+.legend-item .dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px;
+}
+.legend-item .dot.paid { background: #10b981; }
+.legend-item .dot.sent { background: #3b82f6; }
+.legend-item .dot.waiting { background: #f59e0b; }
 .analytics-cards {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -72,4 +132,23 @@
 .last-activity {
   color: #6b7280;
   font-size: 0.9rem;
+}
+
+/* Mobile separators for section titles */
+@media (max-width: 640px) {
+  .analytics-section-title {
+    border-top: 1px solid #e5e7eb;
+    padding-top: 0.75rem;
+    margin-top: 1rem;
+    font-size: 1.2rem;
+  }
+  .donut-wrap {
+    margin-bottom: 0.5rem;
+  }
+}
+
+@media (min-width: 640px) {
+  .analytics-section-title {
+    font-size: 1.15rem;
+  }
 }
