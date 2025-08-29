@@ -1,221 +1,113 @@
-/**
- * Centralized API client with automatic token refresh
- */
+// API base:
+// - In dev, you can use '/api' and Vite proxy.
+// - Or set VITE_API_BASE to 'https://localhost:7094/api' to call backend directly.
+const API_BASE =
+  import.meta.env.VITE_API_BASE ||
+  import.meta.env.VITE_API_BASE_URL ||
+  '/api';
 
-let isRefreshing = false;
-let failedQueue = [];
+// Endpoints
+const ME_ENDPOINT = import.meta.env.VITE_ME_ENDPOINT || '/User/Me';
+const REFRESH_ENDPOINT = import.meta.env.VITE_REFRESH_ENDPOINT || null; // e.g., '/User/Refresh' if available
 
-// Single-flight and short-lived cache for /api/User/Me
-let getCurrentUserInFlight = null; // Promise | null
-let cachedCurrentUser = null; // object | null
-let cachedCurrentUserAt = 0; // timestamp ms
-const CURRENT_USER_CACHE_TTL_MS = 2000; // 2s is enough to survive StrictMode double-invoke
+// de-dupe concurrent refresh calls
+let refreshPromise = null;
+function refreshOnce() {
+  if (refreshPromise) return refreshPromise;
 
-const processQueue = (error, token = null) => {
-  failedQueue.forEach(prom => {
-    if (error) {
-      prom.reject(error);
-    } else {
-      prom.resolve(token);
-    }
-  });
-  
-  failedQueue = [];
-};
+  const candidates = REFRESH_ENDPOINT
+    ? [REFRESH_ENDPOINT]
+    : ['/User/Refresh', '/Token/Refresh', '/Auth/Refresh', '/Account/Refresh'];
 
-const apiClient = {
-  /**
-   * Make an authenticated API request with automatic token refresh
-   */
-  async request(url, options = {}) {
-    const defaultOptions = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-      },
-      credentials: 'include', // Include cookies
-      ...options
-    };
-
-    // Try the original request
-    let response = await fetch(url, defaultOptions);
-
-    // If we get a 401, try to refresh the token
-    if (response.status === 401 && !options._retry) {
-      if (isRefreshing) {
-        // If we're already refreshing, queue this request
-        return new Promise((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
-        }).then(() => {
-          // Retry the original request after refresh
-          return fetch(url, { ...defaultOptions, _retry: true });
-        });
-      }
-
-      isRefreshing = true;
-
+  refreshPromise = (async () => {
+    for (const ep of candidates) {
       try {
-        console.log('Token expired, attempting refresh...');
-        const refreshResponse = await this.refreshToken();
-        
-        if (refreshResponse.ok) {
-          console.log('Token refreshed successfully');
-          processQueue(null);
-          
-          // Retry the original request
-          response = await fetch(url, { ...defaultOptions, _retry: true });
-        } else {
-          console.log('Token refresh failed, user needs to login again');
-          processQueue(new Error('Token refresh failed'), null);
-          this.handleAuthFailure();
-          throw new Error('Authentication failed');
-        }
-      } catch (error) {
-        console.error('Error during token refresh:', error);
-        processQueue(error, null);
-        this.handleAuthFailure();
-        throw error;
-      } finally {
-        isRefreshing = false;
+        const url = ep.startsWith('http')
+          ? ep
+          : `${API_BASE}${ep.startsWith('/') ? '' : '/'}${ep}`;
+        const res = await fetch(url, { method: 'POST', credentials: 'include' });
+        if (res.ok) return true;
+        if (res.status !== 404) return false; 
+      } catch (_) {
+        // try next candidate
       }
     }
+    return false;
+  })().finally(() => {
+    refreshPromise = null;
+  });
 
-    return response;
-  },
+  return refreshPromise;
+}
 
-  /**
-   * Refresh the access token using the refresh token
-   */
-  async refreshToken() {
-    try {
-      const response = await fetch('https://localhost:7094/api/Token/RefreshToken', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include', 
+async function request(path, init = {}, { retry = true } = {}) {
+  const url = path.startsWith('http') ? path : `${API_BASE}${path.startsWith('/') ? '' : '/'}${path}`;
+
+  const headers = new Headers(init.headers || {});
+  if (!headers.has('Accept')) headers.set('Accept', 'application/json');
+
+  const isForm = init.body instanceof FormData || init.body instanceof Blob;
+  const isJsonBody = !!init.body && !isForm && typeof init.body === 'object';
+  const body = isJsonBody ? JSON.stringify(init.body) : init.body;
+  if (isJsonBody && !headers.has('Content-Type')) {
+    headers.set('Content-Type', 'application/json');
+  }
+
+  let res = await fetch(url, {
+    credentials: 'include', 
+    ...init,
+    headers,
+    body,
+  });
+
+  if (res.status === 401 && retry) {
+    const ok = await refreshOnce();
+    if (ok) {
+      res = await fetch(url, {
+        credentials: 'include',
+        ...init,
+        headers,
+        body,
       });
-
-      if (response.ok) {
-        const data = await response.json();
-        
-        // Update localStorage with new tokens if they're in the response
-        if (data.accessToken) {
-          localStorage.setItem('SmartBill_auth_token', data.accessToken);
-        }
-        if (data.refreshToken) {
-          localStorage.setItem('SmartBill_auth_RefreshToken', data.refreshToken);
-        }
-        
-        return response;
-      } else {
-        console.error('Refresh token request failed:', response.status);
-        return response;
-      }
-    } catch (error) {
-      console.error('Network error during token refresh:', error);
-      throw error;
-    }
-  },
-
-  /**
-   * Handle authentication failure - clear tokens and redirect to login
-   */
-  handleAuthFailure() {
-    console.log('Authentication failed, clearing tokens and redirecting to login');
-    
-    // Clear localStorage tokens
-    localStorage.removeItem('SmartBill_auth_token');
-    localStorage.removeItem('SmartBill_auth_RefreshToken');
-    
-    // Clear any auth-related session storage
-    sessionStorage.removeItem('google_code_verifier');
-
-  // Reset cached current user and in-flight promise
-  cachedCurrentUser = null;
-  cachedCurrentUserAt = 0;
-  getCurrentUserInFlight = null;
-    
-    // Redirect to login page
-    window.location.href = '/login';
-  },
-
-  /**
-   * Check if user is authenticated by checking for tokens
-   */
-  isAuthenticated() {
-    // Check for tokens in localStorage or cookies
-    const hasLocalStorageToken = localStorage.getItem('SmartBill_auth_token');
-    const hasCookieToken = document.cookie.includes('SmartBill_auth_token');
-    
-    return hasLocalStorageToken || hasCookieToken;
-  },
-
-  /**
-   * Get current authenticated user info
-   */
-  async getCurrentUser() {
-    try {
-      const now = Date.now();
-      // Serve from short-lived cache to avoid immediate duplicate calls (StrictMode/dev remounts)
-      if (cachedCurrentUser && now - cachedCurrentUserAt < CURRENT_USER_CACHE_TTL_MS) {
-        return cachedCurrentUser;
-      }
-
-      // Return in-flight request if one exists
-      if (getCurrentUserInFlight) {
-        return await getCurrentUserInFlight;
-      }
-
-      // Prepare headers (support cookie or bearer)
-      const authToken = localStorage.getItem('SmartBill_auth_token');
-      const options = {};
-      if (authToken) {
-        options.headers = { 'Authorization': `Bearer ${authToken}` };
-      }
-
-      // Start single-flight request
-      getCurrentUserInFlight = (async () => {
-        const response = await this.request('https://localhost:7094/api/User/Me', options);
-        if (!response.ok) {
-          throw new Error('Failed to get current user');
-        }
-        const data = await response.json();
-        // Update cache
-        cachedCurrentUser = data;
-        cachedCurrentUserAt = Date.now();
-        return data;
-      })();
-
-      const result = await getCurrentUserInFlight;
-      return result;
-    } catch (error) {
-      console.error('Error getting current user:', error);
-      throw error;
-    } finally {
-      // Clear in-flight after resolution/rejection so future calls can refetch after TTL
-      getCurrentUserInFlight = null;
-    }
-  },
-
-  /**
-   * Logout user by clearing tokens and calling logout endpoint
-   */
-  async logout() {
-    try {
-      // Call logout endpoint to invalidate server-side tokens
-      await fetch('https://localhost:7094/api/User/Logout', {
-        method: 'POST',
-        credentials: 'include'
-      });
-    } catch (error) {
-      console.error('Error during logout:', error);
-    } finally {
-      // Always clear local tokens regardless of API call success
-      this.handleAuthFailure();
     }
   }
+
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    const err = new Error(text || `HTTP ${res.status} ${res.statusText}`);
+    err.status = res.status;
+    throw err;
+  }
+
+  const ct = res.headers.get('content-type') || '';
+  return ct.includes('application/json') ? res.json() : res.text();
+}
+
+function isAuthenticated() {
+  return true;
+}
+
+const apiClient = {
+  request,
+  get: (p, init) => request(p, { method: 'GET', ...(init || {}) }),
+  post: (p, body, init) => request(p, { method: 'POST', body, ...(init || {}) }),
+  put: (p, body, init) => request(p, { method: 'PUT', body, ...(init || {}) }),
+  patch: (p, body, init) => request(p, { method: 'PATCH', body, ...(init || {}) }),
+  delete: (p, init) => request(p, { method: 'DELETE', ...(init || {}) }),
+
+  isAuthenticated,
+  async getCurrentUser() {
+  // Call the single configured endpoint; avoid duplicate probes
+  return request(ME_ENDPOINT, { method: 'GET' });
+  },
+
+  async logout() {
+  const candidates = ['/User/Logout', '/Auth/Logout', '/Account/Logout', '/auth/logout'];
+    for (const ep of candidates) {
+      try { await request(ep, { method: 'POST' }); return; }
+      catch (e) { if (e.status && e.status !== 404) throw e; }
+    }
+  },
 };
 
 export default apiClient;

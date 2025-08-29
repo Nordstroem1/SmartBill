@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { useGoogleAuth } from '../../hooks/useGoogleAuth';
+import { useGoogleAuthSecure } from '../../hooks/useGoogleAuthSecure';
 import { useAuth } from '../../hooks/useAuth.jsx';
 import RoleSelection from '../RoleSelection/RoleSelection';
 import SubscriptionModal from '../SubscriptionModal/SubscriptionModal';
@@ -13,7 +13,7 @@ const Register = () => {
   const [showRoleSelection, setShowRoleSelection] = useState(false);
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const [userData, setUserData] = useState(null);
-  const { initiateGoogleAuth, isLoading, error } = useGoogleAuth();
+  const { initiateGoogleAuth, isLoading, error } = useGoogleAuthSecure();
   const { login, user, isLoading: authLoading } = useAuth(); 
   const hasProcessedCode = useRef(false);
 

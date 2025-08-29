@@ -1,15 +1,14 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { getStoredUser, isAuthenticated, logout } from "../../utils/auth";
+import { useAuth } from "../../hooks/useAuth.jsx";
+import apiClient from "../../utils/apiClient";
 import JobModal from "../JobModal/JobModal";
 import CreateJobModal from "../CreateJobModal/CreateJobModal";
 import AnalyticsPanel from "../AnalyticsPanel/AnalyticsPanel";
 import "./Dashboard.css";
 
 function Dashboard() {
-  const [user, setUser] = useState(null);
-  const [bounceAll, setBounceAll] = useState(false);
+  const { user, isLoading: authLoading } = useAuth();
   const [selectedYear, setSelectedYear] = useState(
     Math.max(new Date().getFullYear(), 2025)
   );
@@ -19,52 +18,56 @@ function Dashboard() {
     new Date().toLocaleString('en-US', { month: 'long' })
   );
   const [query, setQuery] = useState("");
-  const navigate = useNavigate();
   const [jobsData, setJobsData] = useState([]);
   const [showAnalytics, setShowAnalytics] = useState(false);
   const [page, setPage] = useState(1);
   const pageSize = 4;
   const [company, setCompany] = useState(null);
+  const [backendError, setBackendError] = useState(null);
 
-  useEffect(() => {
-    // Check if user is authenticated
-    // if (!isAuthenticated()) {
-    //     navigate('/login');
-    //     return;
-    // }
-
-    // Get user data
-    const userData = getStoredUser();
-    setUser(userData);
-    // Mock company info for display at top (replace with API/user-bound data when available)
-    setTimeout(() => {
-      setCompany({
-        name: "SmartBill Studio AB",
-        logoUrl: "https://res.cloudinary.com/dhpjnh2q0/image/upload/v1756215727/PlaceholderLogo_kx7rce.png",
-        address: "123 Invoice St, Billing City"
-      });
-    }, 150);
-  }, [navigate]);
-
-  // Fetch job data to determine which months to display
-  useEffect(() => {
-    // Simulate API call - replace with actual API integration
-    setTimeout(() => {
-      const mockJobs = [
-        { id: 1, title: "Webbdesign för företag", date: "2025-01-15" },
-        { id: 2, title: "Logo design", date: "2025-01-22" },
-        { id: 3, title: "E-handel lösning", date: "2025-01-10" },
-        { id: 4, title: "Mobil app UI/UX", date: "2025-01-28" },
-      ];
-      setJobsData(mockJobs);
-    }, 800);
-  }, []);
-
-  const handleLogout = async () => {
-    await logout();
+  const toFriendlyError = (e) => {
+    if (e?.status === 401) return 'Session expired. Please log in again.';
+    const msg = e?.message || '';
+    const looksLikeNetwork = (!e?.status && (
+      /Failed to fetch|NetworkError|TypeError|ERR_NETWORK|ECONNREFUSED|SSL|CORS/i.test(msg)
+    ));
+    if (looksLikeNetwork) return 'Server problem. Unable to connect to the backend.';
+    return msg || 'Something went wrong.';
   };
 
-  // Removed Whole year CTA in favor of month-only flow
+  useEffect(() => {
+    if (authLoading) return;
+
+    let cancelled = false;
+    (async () => {
+      try {
+        // Backend derives company from auth token cookie; no id needed
+        const data = await apiClient.get('/Company/GetById');
+        if (cancelled) return;
+        const parts = [];
+        if (data?.streetAddress) parts.push(data.streetAddress);
+        const cityLine = [data?.postalCode, data?.city].filter(Boolean).join(' ');
+        if (cityLine) parts.push(cityLine);
+        if (data?.country) parts.push(data.country);
+        setCompany({
+          id: data?.id,
+          name: data?.name || '',
+          logoUrl: data?.logoUrl || '',
+          address: parts.join(', '),
+          email: data?.companyEmail || '',
+          phone: data?.phoneNumber || '',
+          websiteUrl: data?.websiteUrl || null,
+          vatRegistered: !!data?.vatRegistered,
+          vatNumber: data?.vatNumber || null,
+        });
+        setBackendError(null);
+      } catch (e) {
+        setBackendError(toFriendlyError(e));
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [user, authLoading]);
+
 
   const handleMonthClick = (month) => {
     setSelectedMonth(month);
@@ -153,6 +156,11 @@ function Dashboard() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
+        {backendError && (
+          <div className="error-banner" role="alert" aria-live="polite">
+            <div className="error-msg">{backendError}</div>
+          </div>
+        )}
         {company && (
           <motion.header
             className="dashboard-header"

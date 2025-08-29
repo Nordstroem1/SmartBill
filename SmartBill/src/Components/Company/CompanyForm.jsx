@@ -1,17 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
-import fetchWithAuth from '../../utils/fetchWithAuth';
+import React, { useState, useEffect, useRef } from 'react';
+import apiClient from '../../utils/apiClient';
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import "./CompanyForm.css";
 import "../../index.css";
 
-  const handleLogoChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setLogo(file);
-      setLogoPreview(URL.createObjectURL(file));
-    }
-  };
 
 // Small info button with a clickable popover
 const InfoButton = ({ message }) => {
@@ -135,6 +128,7 @@ const CompanyForm = ({ onSubmit }) => {
       return;
     }
     setErrors({});
+
     const companyData = {
       EntityType: entityType,
       PaymentMethodTypes: paymentMethodType,
@@ -169,26 +163,21 @@ const CompanyForm = ({ onSubmit }) => {
     });
 
     try {
-      let response = await fetchWithAuth('https://localhost:7094/api/Company/Create', {
-        method: 'POST',
-        body: formData,
-      });
-      if (response.ok) {
-        setSuccessMsg('Company created successfully!');
-        setShowSuccess(true);
-        setTimeout(() => {
-          setShowSuccess(false);
-          navigate('/dashboard');
-        }, 1500);
-      } else {
-        const text = await response.text();
+      // Use apiClient; it includes credentials and 401→refresh automatically.
+      // Path is proxied via Vite to your API (API base '/api' inside apiClient).
+      await apiClient.post('/Company/Create', formData);
+
+      setSuccessMsg('Company created successfully!');
+      setShowSuccess(true);
+      setTimeout(() => {
         setShowSuccess(false);
         setSuccessMsg("");
-        alert('Failed to create company: ' + text);
-        return;
-      }
+        navigate('/dashboard');
+      }, 1500);
     } catch (err) {
-      alert('Error connecting to API: ' + err.message);
+      setShowSuccess(false);
+      setSuccessMsg("");
+      alert('Failed to create company: ' + (err?.message || 'Unknown error'));
     }
   };
   const handleLogoRemove = () => {

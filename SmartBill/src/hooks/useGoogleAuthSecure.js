@@ -4,72 +4,98 @@
 import { useState, useCallback } from 'react';
 import { GOOGLE_CONFIG, GOOGLE_AUTH_URL } from '../config/googleAuth';
 
-export const useGoogleAuthSecure = () => {
+function b64url(buffer) {
+  return btoa(String.fromCharCode(...new Uint8Array(buffer)))
+    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+async function sha256(input) {
+  const data = new TextEncoder().encode(input);
+  return crypto.subtle.digest('SHA-256', data);
+}
+function randStr(len = 64) {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+  const rnd = new Uint8Array(len);
+  crypto.getRandomValues(rnd);
+  return Array.from(rnd, n => chars[n % chars.length]).join('');
+}
+async function buildPkce() {
+  const state = randStr(32);
+  const codeVerifier = randStr(64);
+  const challenge = b64url(await sha256(codeVerifier));
+  sessionStorage.setItem('google_auth_state', state);
+  sessionStorage.setItem('google_code_verifier', codeVerifier);
+  return { state, challenge, codeVerifier };
+}
+
+export function useGoogleAuthSecure() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // ... existing code for generateState, generateCodeVerifier, generateCodeChallenge ...
+  const initiateGoogleAuth = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const { state, challenge } = await buildPkce();
+      const params = new URLSearchParams({
+        client_id: GOOGLE_CONFIG.CLIENT_ID,
+        redirect_uri: GOOGLE_CONFIG.REDIRECT_URI,
+        response_type: 'code',
+        scope: GOOGLE_CONFIG.SCOPES,
+        access_type: 'offline',
+        include_granted_scopes: 'true',
+        prompt: 'consent',
+        state,
+        code_challenge: challenge,
+        code_challenge_method: 'S256',
+      });
+      window.location.href = `${GOOGLE_AUTH_URL}?${params.toString()}`;
+    } catch (e) {
+      setError(e.message || 'Failed to start Google auth');
+      setIsLoading(false);
+    }
+  }, []);
 
   const handleAuthCallback = useCallback(async (code, state) => {
     try {
       setIsLoading(true);
       setError(null);
 
-      // Verify state parameter
       const storedState = sessionStorage.getItem('google_auth_state');
-      if (state !== storedState) {
-        throw new Error('Invalid state parameter');
-      }
-
+      if (!state || state !== storedState) throw new Error('Invalid state parameter');
       const codeVerifier = sessionStorage.getItem('google_code_verifier');
-      if (!codeVerifier) {
-        throw new Error('Code verifier not found');
-      }
+      if (!codeVerifier) throw new Error('Code verifier not found');
 
-      // Send to backend - backend will set httpOnly cookies
-      const backendResponse = await fetch('/api/auth/google', {
+      const path = import.meta.env.VITE_AUTH_GOOGLE_PATH || '/auth/google';
+      const res = await fetch(`/api${path}`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include', // Important for cookies
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
-          code: code,
-          state: state,
+          code,
+          state,
           code_verifier: codeVerifier,
           redirect_uri: GOOGLE_CONFIG.REDIRECT_URI,
         }),
       });
-
-      if (!backendResponse.ok) {
-        const errorData = await backendResponse.text();
-        throw new Error(`Backend authentication failed: ${errorData}`);
+      if (!res.ok) {
+        const msg = await res.text().catch(() => '');
+        throw new Error(msg || `Backend authentication failed (${res.status})`);
       }
+      const data = await res.json().catch(() => ({}));
 
-      const responseData = await backendResponse.json();
-      
-      // Clean up session storage
       sessionStorage.removeItem('google_auth_state');
       sessionStorage.removeItem('google_code_verifier');
-      
-      // Only store non-sensitive user profile data
-      // JWT token is stored in httpOnly cookie by backend
-      localStorage.setItem('user', JSON.stringify(responseData.user));
-      
-      setIsLoading(false);
-      return responseData;
 
-    } catch (err) {
-      setError(err.message);
       setIsLoading(false);
-      throw err;
+      return data;
+    } catch (e) {
+      setError(e.message || 'Google auth failed');
+      setIsLoading(false);
+      throw e;
     }
   }, []);
 
-  return {
-    initiateGoogleAuth,
-    handleAuthCallback,
-    isLoading,
-    error
-  };
-};
+  return { initiateGoogleAuth, handleAuthCallback, isLoading, error };
+}
+
+export default useGoogleAuthSecure;

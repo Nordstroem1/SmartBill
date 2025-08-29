@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { useGoogleAuth } from '../../hooks/useGoogleAuth';
+import { useGoogleAuthSecure } from '../../hooks/useGoogleAuthSecure';
+import apiClient from '../../utils/apiClient';
 import { useAuth } from '../../hooks/useAuth.jsx';
 import "./Login.css";
 
@@ -8,9 +9,47 @@ const Login = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [backendError, setBackendError] = useState(null);
-  const { initiateGoogleAuth, handleAuthCallback, isLoading, error } = useGoogleAuth();
+  const { initiateGoogleAuth, handleAuthCallback, isLoading, error } = useGoogleAuthSecure();
   const { login } = useAuth(); // Add useAuth hook
   const hasProcessedCode = useRef(false);
+  const hasCheckedSession = useRef(false);
+
+  // Silent session check: try existing access token (and refresh) before starting Google auth
+  useEffect(() => {
+    if (hasCheckedSession.current) return;
+    hasCheckedSession.current = true;
+
+    const code = searchParams.get('code');
+    const state = searchParams.get('state');
+    const errorParam = searchParams.get('error');
+    if (errorParam || (code && state)) return; // let the OAuth flow handle this case
+
+    (async () => {
+      try {
+        const me = await apiClient.getCurrentUser(); // includes 401->refresh->retry
+        
+        // Align redirect logic with post-login behavior
+        const isBusinessOwner = (val) => {
+          if (val === null || val === undefined) return false;
+          const v = typeof val === 'string' ? val.toLowerCase() : val;
+          return v === 'businessowner' || v === 0 || v === '0';
+        };
+
+        const hasCompany = (u) => !!(u?.companyId || (u?.company && u.company.id));
+        
+        login(me);
+        
+        if (isBusinessOwner(me.role) && !hasCompany(me)) {
+          navigate('/company', { replace: true });
+        } else {
+          navigate('/dashboard', { replace: true });
+        }
+      } catch (_) {
+        // no valid session; remain on login
+      }
+    })();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Function to send Google code to your API for login
   const sendGoogleCodeToAPI = async (GoogleCode) => {

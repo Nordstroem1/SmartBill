@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, createContext } from 'react';
+import { useState, useEffect, useRef, useContext, createContext, useCallback } from 'react';
 import apiClient from '../utils/apiClient';
 
 // Create Auth Context
@@ -9,44 +9,27 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState(null);
+  const didInit = useRef(false);
 
-  // Check authentication status on app load
-  useEffect(() => {
-    checkAuthStatus();
-  }, []);
-
-  const checkAuthStatus = async () => {
-    setIsLoading(true);
-    
+  const checkAuthStatus = useCallback(async () => {
     try {
-      if (apiClient.isAuthenticated()) {
-        try {
-          // Try to get user info to verify token is still valid
-          const userData = await apiClient.getCurrentUser();
-          setUser(userData);
-          setIsAuthenticated(true);
-        } catch (networkError) {
-          // If it's a network error (backend offline), don't spam console
-          if (networkError.message.includes('Failed to fetch')) {
-            console.log('Backend appears to be offline, user will need to login when it\'s back');
-          } else {
-            console.error('Auth check failed:', networkError);
-          }
-          setIsAuthenticated(false);
-          setUser(null);
-        }
-      } else {
-        setIsAuthenticated(false);
-        setUser(null);
-      }
-    } catch (error) {
-      console.error('Unexpected auth error:', error);
-      setIsAuthenticated(false);
+      const me = await apiClient.getCurrentUser();
+      setUser(me || null);
+      setIsAuthenticated(true);
+    } catch (err) {
+      console.error('Auth check failed:', err);
       setUser(null);
+      setIsAuthenticated(false);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (didInit.current) return;      // prevent StrictMode double-run in dev
+    didInit.current = true;
+    checkAuthStatus();
+  }, []);
 
   const login = (userData) => {
     setUser(userData);
