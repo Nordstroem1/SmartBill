@@ -172,9 +172,14 @@ const Header = () => {
                   // Authenticated user menu
                   <>
                     {user && (
-                      <div className="user-info">
+                      <button
+                        className="user-info"
+                        onClick={() => handleNavigation('/user')}
+                        aria-label="Go to your profile"
+                        style={{ background: 'transparent', border: 'none', padding: 0, textAlign: 'left', cursor: 'pointer' }}
+                      >
                         <p>{formatName(user?.fullName)}</p>
-                      </div>
+                      </button>
                     )}
                     <button
                       className="nav-btn dashboard-btn"

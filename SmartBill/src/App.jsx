@@ -11,6 +11,7 @@ import ProtectedRoute from './Components/ProtectedRoute/ProtectedRoute'
 import SubscriptionComplete from './Components/SubscriptionComplete/SubscriptionComplete'
 import SubscriptionSuccess from './Components/SubscriptionSuccess/SubscriptionSuccess'
 import Register from './Components/Register/Register'
+import UserPage from './Components/User/UserPage'
 
 function App() {
 
@@ -47,6 +48,14 @@ function App() {
                     <Dashboard />
                   // </ProtectedRoute>
                 } 
+              />
+              <Route 
+                path="/user" 
+                element={
+                  <ProtectedRoute>
+                    <UserPage />
+                  </ProtectedRoute>
+                }
               />
               <Route 
                 path="/company" 
